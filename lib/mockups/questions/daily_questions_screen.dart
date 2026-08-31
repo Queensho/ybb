@@ -32,9 +32,7 @@ class _DailyQuestionsScreenState extends State<DailyQuestionsScreen> {
     if (index < questions.length - 1) {
       setState(() => index++);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bugünün soruları tamamlandı.')),
-      );
+      Navigator.of(context).pop();
     }
   }
 
@@ -99,22 +97,12 @@ class _DailyQuestionsScreenState extends State<DailyQuestionsScreen> {
                     Text(q.text, style: const TextStyle(color: Colors.white, fontSize: 30, height: 1.2, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 28),
                     for (final option in q.options) ...[
-                      _AnswerCard(
-                        label: option,
-                        selected: selected == option,
-                        onTap: () => setState(() => answers[index] = option),
-                      ),
+                      _AnswerCard(label: option, selected: selected == option, onTap: () => setState(() => answers[index] = option)),
                       const SizedBox(height: 12),
                     ],
                     const Divider(color: Color(0xFF332B40)),
                     const SizedBox(height: 10),
-                    _AnswerCard(
-                      label: 'Cevap vermek istemiyorum',
-                      selected: selected == 'Cevap vermek istemiyorum',
-                      muted: true,
-                      icon: Icons.block_rounded,
-                      onTap: () => setState(() => answers[index] = 'Cevap vermek istemiyorum'),
-                    ),
+                    _AnswerCard(label: 'Cevap vermek istemiyorum', selected: selected == 'Cevap vermek istemiyorum', muted: true, icon: Icons.block_rounded, onTap: () => setState(() => answers[index] = 'Cevap vermek istemiyorum')),
                   ],
                 ),
               ),
@@ -124,42 +112,10 @@ class _DailyQuestionsScreenState extends State<DailyQuestionsScreen> {
               child: Row(
                 children: [
                   if (index > 0) ...[
-                    Expanded(
-                      child: SizedBox(
-                        height: 58,
-                        child: OutlinedButton.icon(
-                          onPressed: _previous,
-                          icon: const Icon(Icons.arrow_back_rounded),
-                          label: const Text('Önceki'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Color(0xFF5B506A)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                          ),
-                        ),
-                      ),
-                    ),
+                    Expanded(child: SizedBox(height: 58, child: OutlinedButton.icon(onPressed: _previous, icon: const Icon(Icons.arrow_back_rounded), label: const Text('Önceki'), style: OutlinedButton.styleFrom(foregroundColor: Colors.white, side: const BorderSide(color: Color(0xFF5B506A)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)))))),
                     const SizedBox(width: 12),
                   ],
-                  Expanded(
-                    child: SizedBox(
-                      height: 58,
-                      child: FilledButton(
-                        onPressed: selected == null ? null : _next,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: context.tokens.lime,
-                          foregroundColor: Colors.black,
-                          disabledBackgroundColor: const Color(0xFF28252F),
-                          disabledForegroundColor: const Color(0xFF77717E),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: Text(
-                          index == questions.length - 1 ? 'Kaydet ve tamamla' : 'Kaydet ve devam et',
-                          style: const TextStyle(fontWeight: FontWeight.w900),
-                        ),
-                      ),
-                    ),
-                  ),
+                  Expanded(child: SizedBox(height: 58, child: FilledButton(onPressed: selected == null ? null : _next, style: FilledButton.styleFrom(backgroundColor: context.tokens.lime, foregroundColor: Colors.black, disabledBackgroundColor: const Color(0xFF28252F), disabledForegroundColor: const Color(0xFF77717E), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))), child: Text(index == questions.length - 1 ? 'Kaydet ve tamamla' : 'Kaydet ve devam et', style: const TextStyle(fontWeight: FontWeight.w900))))),
                 ],
               ),
             ),
@@ -172,7 +128,6 @@ class _DailyQuestionsScreenState extends State<DailyQuestionsScreen> {
 
 class _AnswerCard extends StatelessWidget {
   const _AnswerCard({required this.label, required this.selected, required this.onTap, this.muted = false, this.icon});
-
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -180,31 +135,19 @@ class _AnswerCard extends StatelessWidget {
   final IconData? icon;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: Ink(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
-          decoration: BoxDecoration(
-            color: selected ? const Color(0xFF25163B) : (muted ? const Color(0xFF121019) : const Color(0xFF14111D)),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: selected ? context.tokens.lime : const Color(0xFF332B40), width: selected ? 2 : 1),
-          ),
-          child: Row(
-            children: [
-              Icon(icon ?? (selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded), color: selected ? context.tokens.lime : const Color(0xFFAAA1B4), size: 30),
-              const SizedBox(width: 15),
-              Expanded(child: Text(label, style: TextStyle(color: selected ? Colors.white : const Color(0xFFD5CDDF), fontSize: 17, fontWeight: selected ? FontWeight.w800 : FontWeight.w600))),
-            ],
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(22),
+          child: Ink(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 19),
+            decoration: BoxDecoration(color: selected ? const Color(0xFF25163B) : (muted ? const Color(0xFF121019) : const Color(0xFF14111D)), borderRadius: BorderRadius.circular(22), border: Border.all(color: selected ? context.tokens.lime : const Color(0xFF332B40), width: selected ? 2 : 1)),
+            child: Row(children: [Icon(icon ?? (selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded), color: selected ? context.tokens.lime : const Color(0xFFAAA1B4), size: 30), const SizedBox(width: 15), Expanded(child: Text(label, style: TextStyle(color: selected ? Colors.white : const Color(0xFFD5CDDF), fontSize: 17, fontWeight: selected ? FontWeight.w800 : FontWeight.w600)))]),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _DailyQuestion {
