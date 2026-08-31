@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/context_ext.dart';
 import 'gender_selection_screen.dart';
 
@@ -7,255 +8,127 @@ class WelcomeIntroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const black = Color(0xFF090712);
     return Scaffold(
+      backgroundColor: black,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                context.tokens.spaceLg,
-                context.tokens.spaceLg,
-                context.tokens.spaceLg,
-                context.tokens.spaceXl,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - context.tokens.spaceXl),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const _CurvedHero(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(context.tokens.spaceLg, 18, context.tokens.spaceLg, 34),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: context.colors.primary.withOpacity(.12),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: context.colors.primary.withOpacity(.22)),
-                          ),
-                          child: Text(
-                            'ADIM 1 / 4',
-                            style: context.texts.labelLarge?.copyWith(
-                              color: context.colors.primary,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: .5,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: context.colors.surfaceContainer,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(Icons.close_rounded, color: context.colors.onSurfaceVariant),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: context.tokens.spaceLg),
-                    _HeroCard(),
-                    SizedBox(height: context.tokens.spaceLg),
-                    Text(
-                      'Hoş geldiniz',
-                      style: context.texts.labelLarge?.copyWith(
-                        color: context.tokens.lime,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: .3,
-                      ),
-                    ),
-                    SizedBox(height: context.tokens.spaceSm),
-                    Text(
-                      'Sizi biraz tanıyalım',
-                      style: context.texts.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        height: 1.05,
-                      ),
-                    ),
-                    SizedBox(height: context.tokens.spaceMd),
+                    Text('Hoş geldiniz', style: context.texts.titleMedium?.copyWith(color: context.tokens.lime, fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 8),
+                    Text('Sizi biraz tanıyalım', style: context.texts.headlineLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900, height: 1.04)),
+                    const SizedBox(height: 18),
                     Text(
                       'Önce cinsiyet bilginizi, ardından sizinle ilgili birkaç temel soru soracağız. Son adımda sizin için en önemli iki partner tercihini seçebileceksiniz. Cevaplarınız, eşleşme raporlarının daha doğru hazırlanmasına yardımcı olur.',
-                      style: context.texts.bodyLarge?.copyWith(
-                        color: context.colors.onSurfaceVariant,
-                        height: 1.55,
-                      ),
+                      style: context.texts.bodyLarge?.copyWith(color: const Color(0xFFC9C3D5), height: 1.55),
                     ),
-                    SizedBox(height: context.tokens.spaceLg),
+                    const SizedBox(height: 24),
                     Container(
-                      padding: EdgeInsets.all(context.tokens.spaceMd),
+                      padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: context.colors.surfaceContainer,
-                        borderRadius: BorderRadius.circular(context.tokens.radiusLg),
-                        border: Border.all(color: context.colors.outlineVariant.withOpacity(.6)),
+                        color: const Color(0xFF120D20),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: const Color(0xFF6E35C8).withOpacity(.55)),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: context.colors.primary.withOpacity(.12),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(Icons.info_outline_rounded, color: context.colors.primary),
-                          ),
-                          SizedBox(width: context.tokens.spaceMd),
-                          Expanded(
-                            child: Text(
-                              'Daha sonra profilinizdeki “Hakkımda” bölümünden cevaplarınızı yeniden görebilir ve değiştirebilirsiniz. Bu seçeneğin sunulduğu sorularda “Cevap vermek istemiyorum” seçeneğini kullanabilirsiniz.',
-                              style: context.texts.bodyMedium?.copyWith(
-                                color: context.colors.onSurfaceVariant,
-                                height: 1.48,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Container(
+                          width: 46, height: 46,
+                          decoration: BoxDecoration(color: const Color(0xFF2B174A), borderRadius: BorderRadius.circular(15)),
+                          child: const Icon(Icons.info_outline_rounded, color: Color(0xFF9A55FF)),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(child: Text(
+                          'Daha sonra profilinizdeki “Hakkımda” bölümünden cevaplarınızı yeniden görebilir ve değiştirebilirsiniz. Bu seçeneğin sunulduğu sorularda “Cevap vermek istemiyorum” seçeneğini kullanabilirsiniz.',
+                          style: context.texts.bodyMedium?.copyWith(color: const Color(0xFFC9C3D5), height: 1.5),
+                        )),
+                      ]),
                     ),
-                    SizedBox(height: context.tokens.spaceLg),
-                    Row(
-                      children: [
-                        _StepDot(active: true),
-                        _StepDot(),
-                        _StepDot(),
-                        _StepDot(),
-                      ],
-                    ),
-                    SizedBox(height: context.tokens.spaceLg),
+                    const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: context.tokens.lime,
-                          foregroundColor: const Color(0xFF100B1E),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const GenderSelectionScreen(),
-                            ),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Hazırsanız başlayalım'),
-                            SizedBox(width: 10),
-                            Icon(Icons.arrow_forward_rounded),
-                          ],
-                        ),
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(backgroundColor: context.tokens.lime, foregroundColor: black, padding: const EdgeInsets.symmetric(vertical: 19)),
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const GenderSelectionScreen())),
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: const Text('Hazırsanız başlayalım', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _HeroCard extends StatelessWidget {
+class _CurvedHero extends StatelessWidget {
+  const _CurvedHero();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 205,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [context.colors.primary, const Color(0xFF5521A8)],
-        ),
-        borderRadius: BorderRadius.circular(context.tokens.radiusLg + 8),
-        boxShadow: const [
-          BoxShadow(color: Color(0x334E1A9E), blurRadius: 28, offset: Offset(0, 14)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: -24,
-            top: -18,
-            child: _Blob(size: 110, color: const Color(0x33B7FF2A)),
+    return SizedBox(
+      height: 430,
+      width: double.infinity,
+      child: ClipPath(
+        clipper: _OvalBottomClipper(),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF9A4DFF), Color(0xFF6D21D7), Color(0xFF45108D)]),
           ),
-          Positioned(
-            right: -18,
-            bottom: -22,
-            child: _Blob(size: 120, color: const Color(0x338C45FF)),
-          ),
-          Center(
-            child: Container(
-              width: 118,
-              height: 118,
-              decoration: BoxDecoration(
-                color: const Color(0xFF130C21),
-                borderRadius: BorderRadius.circular(34),
-                border: Border.all(color: Colors.white.withOpacity(.10)),
-                boxShadow: const [
-                  BoxShadow(color: Color(0x66000000), blurRadius: 30, offset: Offset(12, 18)),
-                ],
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(Icons.waving_hand_rounded, size: 58, color: Color(0xFFB7FF2A)),
-                  Positioned(
-                    right: 12,
-                    bottom: 12,
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF8C45FF),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.favorite_rounded, size: 17, color: Colors.white),
-                    ),
-                  ),
-                ],
+          child: Stack(children: [
+            Positioned(left: 22, top: 24, child: _Pill()),
+            Positioned(right: 22, top: 20, child: Container(width: 48, height: 48, decoration: const BoxDecoration(color: Color(0x33210A45), shape: BoxShape.circle), child: const Icon(Icons.close_rounded, color: Colors.white70))),
+            Positioned(left: -45, top: 100, child: SvgPicture.asset('assets/3d/07_lime_blob.svg', width: 145)),
+            Positioned(right: -38, bottom: 55, child: SvgPicture.asset('assets/3d/09_purple_blob.svg', width: 155)),
+            Positioned(right: 24, top: 112, child: Transform.rotate(angle: .1, child: SvgPicture.asset('assets/3d/04_message_bubble.svg', width: 92))),
+            Positioned(left: 24, bottom: 92, child: Transform.rotate(angle: -.12, child: SvgPicture.asset('assets/3d/05_security_shield.svg', width: 88))),
+            Positioned(right: 64, bottom: 112, child: SvgPicture.asset('assets/3d/03_lock.svg', width: 98)),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30, bottom: 42),
+                child: SizedBox(width: 260, height: 270, child: Stack(alignment: Alignment.center, children: [
+                  Transform.rotate(angle: -.07, child: SvgPicture.asset('assets/3d/01_phone.svg', width: 220)),
+                  Positioned(left: 4, top: 84, child: SvgPicture.asset('assets/3d/02_profile_user.svg', width: 116)),
+                ])),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Blob extends StatelessWidget {
-  const _Blob({required this.size, required this.color});
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    );
-  }
-}
-
-class _StepDot extends StatelessWidget {
-  const _StepDot({this.active = false});
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 5,
-        margin: const EdgeInsets.only(right: 7),
-        decoration: BoxDecoration(
-          color: active ? context.tokens.lime : context.colors.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(999),
+          ]),
         ),
       ),
     );
   }
+}
+
+class _Pill extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+    decoration: BoxDecoration(color: const Color(0x33210A45), borderRadius: BorderRadius.circular(999), border: Border.all(color: Colors.white12)),
+    child: const Text('ADIM 1 / 4', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: .4)),
+  );
+}
+
+class _OvalBottomClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 92);
+    path.quadraticBezierTo(size.width * .5, size.height + 42, size.width, size.height - 92);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
