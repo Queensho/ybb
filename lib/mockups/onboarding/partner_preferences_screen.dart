@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import '../matches/matches_screen.dart';
 
 class PartnerPreferencesScreen extends StatefulWidget {
   const PartnerPreferencesScreen({super.key});
@@ -70,8 +71,17 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
         ),
       ),
     );
-    if (result == null) return;
+
+    if (result == null || !mounted) return;
+
     setState(() => selections[index] = result);
+
+    if (selectedPreferenceCount >= 2 && mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const MatchesScreen()),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -89,24 +99,19 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
               remainingRights: remainingRights,
             ),
             Expanded(
-              child: SingleChildScrollView(
+              child: ListView.separated(
                 padding: EdgeInsets.fromLTRB(
                   context.tokens.spaceLg,
                   14,
                   context.tokens.spaceLg,
                   40,
                 ),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < questions.length; i++) ...[
-                      _PreferenceTile(
-                        question: questions[i],
-                        selectedValues: selections[i] ?? <String>{},
-                        onTap: () => _openQuestion(i),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
+                itemCount: questions.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, i) => _PreferenceTile(
+                  question: questions[i],
+                  selectedValues: selections[i] ?? <String>{},
+                  onTap: () => _openQuestion(i),
                 ),
               ),
             ),
@@ -141,6 +146,8 @@ class _PartnerPreferenceDetailScreenState
   void initState() {
     super.initState();
     selected = {...widget.initialSelection};
+    doesntMatter = selected.contains('Fark etmez');
+    if (doesntMatter) selected.clear();
   }
 
   void _toggle(String option) {
@@ -220,7 +227,6 @@ class _PartnerPreferenceDetailScreenState
                       ),
                       const SizedBox(height: 12),
                     ],
-                    const SizedBox(height: 4),
                     const Divider(color: Color(0xFF31283D)),
                     const SizedBox(height: 10),
                     InkWell(
