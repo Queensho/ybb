@@ -73,7 +73,6 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
     );
 
     if (result == null || !mounted) return;
-
     setState(() => selections[index] = result);
 
     if (selectedPreferenceCount >= 2 && mounted) {
@@ -87,7 +86,6 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     const black = Color(0xFF090712);
-
     return Scaffold(
       backgroundColor: black,
       body: SafeArea(
@@ -141,6 +139,8 @@ class _PartnerPreferenceDetailScreenState
     extends State<PartnerPreferenceDetailScreen> {
   late Set<String> selected;
   bool doesntMatter = false;
+  bool _heroVisible = true;
+  double _lastOffset = 0;
 
   @override
   void initState() {
@@ -148,6 +148,22 @@ class _PartnerPreferenceDetailScreenState
     selected = {...widget.initialSelection};
     doesntMatter = selected.contains('Fark etmez');
     if (doesntMatter) selected.clear();
+  }
+
+  bool _onScroll(ScrollNotification notification) {
+    if (notification is! ScrollUpdateNotification) return false;
+    final offset = notification.metrics.pixels;
+    final delta = offset - _lastOffset;
+    _lastOffset = offset;
+
+    if (offset <= 8 && !_heroVisible) {
+      setState(() => _heroVisible = true);
+    } else if (delta > 4 && offset > 18 && _heroVisible) {
+      setState(() => _heroVisible = false);
+    } else if (delta < -4 && !_heroVisible) {
+      setState(() => _heroVisible = true);
+    }
+    return false;
   }
 
   void _toggle(String option) {
@@ -178,113 +194,140 @@ class _PartnerPreferenceDetailScreenState
       body: SafeArea(
         child: Column(
           children: [
-            _PreferenceDetailHero(
-              icon: widget.question.icon,
-              onBack: () => Navigator.of(context).pop(),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeInOutCubic,
+              height: _heroVisible ? 210 : 0,
+              child: ClipRect(
+                child: AnimatedSlide(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeInOutCubic,
+                  offset: _heroVisible ? Offset.zero : const Offset(0, -1),
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 220),
+                    opacity: _heroVisible ? 1 : 0,
+                    child: _PreferenceDetailHero(
+                      icon: widget.question.icon,
+                      onBack: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(
-                  context.tokens.spaceLg,
-                  14,
-                  context.tokens.spaceLg,
-                  120,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      widget.question.title,
-                      style: context.texts.headlineLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        height: 1.08,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Karşınızdaki kişide aradığınız cevabı seçin.',
-                      style: context.texts.bodyLarge?.copyWith(
-                        color: const Color(0xFFC9C3D5),
-                      ),
-                    ),
-                    if (widget.question.multiSelect) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'Sizin için uygun olan birden fazla cevabı seçebilirsiniz.',
-                        style: context.texts.bodyMedium?.copyWith(
-                          color: const Color(0xFF8F879A),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 22),
-                    for (final option in widget.question.options) ...[
-                      _PreferenceOptionCard(
-                        label: option,
-                        selected: selected.contains(option),
-                        square: widget.question.multiSelect,
-                        onTap: () => _toggle(option),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                    const Divider(color: Color(0xFF31283D)),
-                    const SizedBox(height: 10),
-                    InkWell(
-                      onTap: _toggleDoesntMatter,
-                      borderRadius: BorderRadius.circular(24),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(
-                          color: doesntMatter
-                              ? context.tokens.lime.withOpacity(.10)
-                              : const Color(0xFF14101D),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: doesntMatter
-                                ? context.tokens.lime
-                                : const Color(0xFF31283D),
-                            width: doesntMatter ? 2 : 1,
+              child: NotificationListener<ScrollNotification>(
+                onNotification: _onScroll,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(
+                    context.tokens.spaceLg,
+                    14,
+                    context.tokens.spaceLg,
+                    120,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (!_heroVisible)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton.filledTonal(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(Icons.arrow_back_rounded),
                           ),
                         ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.remove_circle_outline_rounded,
-                              color: doesntMatter
-                                  ? context.tokens.lime
-                                  : const Color(0xFF9E95AA),
-                              size: 30,
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Fark etmez',
-                                    style: context.texts.titleLarge?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'Bu seçim tercihi etkinleştirir ve bir tercih hakkı kullanır.',
-                                    style: context.texts.bodyMedium?.copyWith(
-                                      color: const Color(0xFFC9C3D5),
-                                      height: 1.45,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      Text(
+                        widget.question.title,
+                        style: context.texts.headlineLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          height: 1.08,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      Text(
+                        'Karşınızdaki kişide aradığınız cevabı seçin.',
+                        style: context.texts.bodyLarge?.copyWith(
+                          color: const Color(0xFFC9C3D5),
+                        ),
+                      ),
+                      if (widget.question.multiSelect) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Sizin için uygun olan birden fazla cevabı seçebilirsiniz.',
+                          style: context.texts.bodyMedium?.copyWith(
+                            color: const Color(0xFF8F879A),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 22),
+                      for (final option in widget.question.options) ...[
+                        _PreferenceOptionCard(
+                          label: option,
+                          selected: selected.contains(option),
+                          square: widget.question.multiSelect,
+                          onTap: () => _toggle(option),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      const Divider(color: Color(0xFF31283D)),
+                      const SizedBox(height: 10),
+                      InkWell(
+                        onTap: _toggleDoesntMatter,
+                        borderRadius: BorderRadius.circular(24),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: doesntMatter
+                                ? context.tokens.lime.withOpacity(.10)
+                                : const Color(0xFF14101D),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: doesntMatter
+                                  ? context.tokens.lime
+                                  : const Color(0xFF31283D),
+                              width: doesntMatter ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.remove_circle_outline_rounded,
+                                color: doesntMatter
+                                    ? context.tokens.lime
+                                    : const Color(0xFF9E95AA),
+                                size: 30,
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Fark etmez',
+                                      style: context.texts.titleLarge?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      'Bu seçim tercihi etkinleştirir ve bir tercih hakkı kullanır.',
+                                      style: context.texts.bodyMedium?.copyWith(
+                                        color: const Color(0xFFC9C3D5),
+                                        height: 1.45,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -536,7 +579,6 @@ class _PreferenceDetailHero extends StatelessWidget {
 
 class _HeroIcon extends StatelessWidget {
   const _HeroIcon({required this.icon});
-
   final IconData icon;
 
   @override
@@ -569,7 +611,6 @@ class _PreferenceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasSelection = selectedValues.isNotEmpty;
     final subtitle = hasSelection ? selectedValues.join(', ') : 'Henüz seçilmedi';
-
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
