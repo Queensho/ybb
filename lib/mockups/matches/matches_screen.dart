@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import 'match_profile_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({super.key});
@@ -72,6 +73,24 @@ class _MatchesScreenState extends State<MatchesScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _openMatch(_MatchData match) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MatchProfileScreen(
+          name: match.name,
+          city: match.city,
+          age: match.age,
+          score: match.score,
+          interests: match.interests,
+          status: match.status,
+          online: match.online,
+          imageUrl: match.imageUrl,
+          verified: match.verified,
+        ),
+      ),
+    );
   }
 
   @override
@@ -150,6 +169,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   return _MatchCard(
                     data: match,
                     favorite: favorites.contains(match.name),
+                    onTap: () => _openMatch(match),
                     onFavorite: () {
                       setState(() {
                         if (!favorites.add(match.name)) favorites.remove(match.name);
@@ -225,134 +245,147 @@ class _MatchesHero extends StatelessWidget {
 }
 
 class _MatchCard extends StatelessWidget {
-  const _MatchCard({required this.data, required this.favorite, required this.onFavorite});
+  const _MatchCard({
+    required this.data,
+    required this.favorite,
+    required this.onTap,
+    required this.onFavorite,
+  });
 
   final _MatchData data;
   final bool favorite;
+  final VoidCallback onTap;
   final VoidCallback onFavorite;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF111019),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFF2B2338)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
+        child: Ink(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF111019),
+            borderRadius: BorderRadius.circular(26),
+            border: Border.all(color: const Color(0xFF2B2338)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 92,
-                height: 92,
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: context.tokens.lime, width: 2),
-                ),
-                child: ClipOval(
-                  child: Image.network(
-                    data.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const ColoredBox(
-                      color: Color(0xFF21172F),
-                      child: Icon(Icons.person_rounded, color: Colors.white70, size: 44),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 92,
+                    height: 92,
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: context.tokens.lime, width: 2),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        data.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const ColoredBox(
+                          color: Color(0xFF21172F),
+                          child: Icon(Icons.person_rounded, color: Colors.white70, size: 44),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                bottom: 3,
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: data.online ? context.tokens.lime : const Color(0xFF9B95A5),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFF111019), width: 3),
+                  Positioned(
+                    right: 0,
+                    bottom: 3,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: data.online ? context.tokens.lime : const Color(0xFF9B95A5),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF111019), width: 3),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(data.name, style: context.texts.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900)),
-                    if (data.verified) ...[
-                      const SizedBox(width: 6),
-                      const Icon(Icons.verified_rounded, color: Color(0xFF8B34FF), size: 20),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 6,
-                  children: [
-                    _Meta(icon: Icons.location_on_outlined, text: data.city),
-                    _Meta(icon: Icons.person_outline_rounded, text: '${data.age}'),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: data.interests.map((e) => _Interest(label: e)).toList(),
-                ),
-                const SizedBox(height: 9),
-                Row(
-                  children: [
-                    Container(width: 7, height: 7, decoration: BoxDecoration(color: data.online ? context.tokens.lime : const Color(0xFF827B8D), shape: BoxShape.circle)),
-                    const SizedBox(width: 6),
-                    Text(data.status, style: context.texts.bodySmall?.copyWith(color: data.online ? context.tokens.lime : const Color(0xFF9D96A7))),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(color: const Color(0xFF1A1723), borderRadius: BorderRadius.circular(18)),
+              const SizedBox(width: 14),
+              Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('%${data.score}', style: TextStyle(color: context.tokens.lime, fontSize: 22, fontWeight: FontWeight.w900)),
-                    const Text('Uyum', style: TextStyle(color: Color(0xFFA49BAF), fontSize: 11)),
+                    Row(
+                      children: [
+                        Text(data.name, style: context.texts.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900)),
+                        if (data.verified) ...[
+                          const SizedBox(width: 6),
+                          const Icon(Icons.verified_rounded, color: Color(0xFF8B34FF), size: 20),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 6,
+                      children: [
+                        _Meta(icon: Icons.location_on_outlined, text: data.city),
+                        _Meta(icon: Icons.person_outline_rounded, text: '${data.age}'),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: data.interests.map((e) => _Interest(label: e)).toList(),
+                    ),
+                    const SizedBox(height: 9),
+                    Row(
+                      children: [
+                        Container(width: 7, height: 7, decoration: BoxDecoration(color: data.online ? context.tokens.lime : const Color(0xFF827B8D), shape: BoxShape.circle)),
+                        const SizedBox(width: 6),
+                        Text(data.status, style: context.texts.bodySmall?.copyWith(color: data.online ? context.tokens.lime : const Color(0xFF9D96A7))),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
-              InkWell(
-                onTap: onFavorite,
-                borderRadius: BorderRadius.circular(999),
-                child: Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFF514765)),
+              const SizedBox(width: 10),
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(color: const Color(0xFF1A1723), borderRadius: BorderRadius.circular(18)),
+                    child: Column(
+                      children: [
+                        Text('%${data.score}', style: TextStyle(color: context.tokens.lime, fontSize: 22, fontWeight: FontWeight.w900)),
+                        const Text('Uyum', style: TextStyle(color: Color(0xFFA49BAF), fontSize: 11)),
+                      ],
+                    ),
                   ),
-                  child: Icon(
-                    favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    color: context.tokens.lime,
+                  const SizedBox(height: 14),
+                  InkWell(
+                    onTap: onFavorite,
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF514765)),
+                      ),
+                      child: Icon(
+                        favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        color: context.tokens.lime,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
