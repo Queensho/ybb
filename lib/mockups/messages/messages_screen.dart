@@ -18,7 +18,7 @@ class _MessagesScreenState extends State<MessagesScreen>{
         const _Hero(),
         Padding(padding:const EdgeInsets.fromLTRB(20,8,20,10),child:TextField(controller:controller,onChanged:(_)=>setState((){}),style:const TextStyle(color:Colors.white),decoration:InputDecoration(hintText:'Mesajlarda ara',prefixIcon:const Icon(Icons.search_rounded),filled:true,fillColor:const Color(0xFF14111D),border:OutlineInputBorder(borderRadius:BorderRadius.circular(22),borderSide:const BorderSide(color:Color(0xFF342A42))),enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(22),borderSide:const BorderSide(color:Color(0xFF342A42))))),),
         Padding(padding:const EdgeInsets.symmetric(horizontal:20,vertical:6),child:Row(children:[Text('Sohbetler',style:context.texts.titleLarge?.copyWith(color:Colors.white,fontWeight:FontWeight.w900)),const Spacer(),Text('${chats.length} konuşma',style:const TextStyle(color:Color(0xFF9E95AA),fontWeight:FontWeight.w600))])),
-        Expanded(child:ListView.separated(padding:const EdgeInsets.fromLTRB(16,8,16,110),itemCount:chats.length,separatorBuilder:(_,__)=>const SizedBox(height:7),itemBuilder:(context,i)=>_ChatTile(data:chats[i],onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>ChatScreen(data:chats[i]))))),
+        Expanded(child:ListView.separated(padding:const EdgeInsets.fromLTRB(16,8,16,110),itemCount:chats.length,separatorBuilder:(_,__)=>const SizedBox(height:7),itemBuilder:(context,i)=>_ChatTile(data:chats[i],onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>ChatScreen(data:chats[i])))))),
       ])),
       bottomNavigationBar:const _MessagesBottomNav(),
     );
