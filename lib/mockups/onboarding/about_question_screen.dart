@@ -16,10 +16,12 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
     _QuestionData(
       title: 'Daha önce evlendiniz mi?',
       options: ['Evet', 'Hayır'],
+      icon: Icons.favorite_rounded,
     ),
     _QuestionData(
       title: 'Çocuğunuz var mı?',
       options: ['Evet', 'Hayır'],
+      icon: Icons.child_care_rounded,
     ),
     _QuestionData(
       title: 'Gelecekte çocuk sahibi olmak ister misiniz?',
@@ -30,18 +32,22 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
         'İstiyorum',
         'Kesinlikle istiyorum',
       ],
+      icon: Icons.family_restroom_rounded,
     ),
     _QuestionData(
       title: 'Ne sıklıkla sigara kullanırsınız?',
       options: ['Hiç', 'Çok nadir', 'Ara sıra', 'Sık', 'Çok sık'],
+      icon: Icons.smoking_rooms_rounded,
     ),
     _QuestionData(
       title: 'Ne sıklıkla alkol kullanırsınız?',
       options: ['Hiç', 'Çok nadir', 'Ara sıra', 'Sık', 'Çok sık'],
+      icon: Icons.local_bar_rounded,
     ),
     _QuestionData(
       title: 'Tamamladığınız en yüksek eğitim düzeyi nedir?',
       options: ['İlköğretim', 'Lise', 'Ön lisans / Lisans', 'Yüksek lisans', 'Doktora'],
+      icon: Icons.school_rounded,
     ),
   ];
 
@@ -58,12 +64,10 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
 
   void _continue() {
     if (selectedAnswer == null) return;
-
     if (!isLastQuestion) {
       setState(() => currentIndex++);
       return;
     }
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Hakkımda soruları tamamlandı.')),
     );
@@ -73,6 +77,9 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
   Widget build(BuildContext context) {
     const black = Color(0xFF090712);
     final question = questions[currentIndex];
+    final step = currentIndex + 1;
+    final progress = step / questions.length;
+    final percent = (progress * 100).round();
 
     return Scaffold(
       backgroundColor: black,
@@ -82,7 +89,51 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
             _AboutHero(
               questionIndex: currentIndex,
               questionCount: questions.length,
+              icon: question.icon,
               onBack: _goBack,
+            ),
+            Container(
+              color: black,
+              padding: EdgeInsets.fromLTRB(
+                context.tokens.spaceLg,
+                8,
+                context.tokens.spaceLg,
+                14,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'SORU $step / ${questions.length}',
+                        style: context.texts.labelLarge?.copyWith(
+                          color: context.tokens.lime,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: .5,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        '%$percent',
+                        style: context.texts.labelLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 7,
+                      backgroundColor: const Color(0xFF241B31),
+                      valueColor: AlwaysStoppedAnimation<Color>(context.tokens.lime),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: AnimatedSwitcher(
@@ -152,31 +203,34 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
 }
 
 class _QuestionData {
-  const _QuestionData({required this.title, required this.options});
+  const _QuestionData({
+    required this.title,
+    required this.options,
+    required this.icon,
+  });
 
   final String title;
   final List<String> options;
+  final IconData icon;
 }
 
 class _AboutHero extends StatelessWidget {
   const _AboutHero({
     required this.questionIndex,
     required this.questionCount,
+    required this.icon,
     required this.onBack,
   });
 
   final int questionIndex;
   final int questionCount;
+  final IconData icon;
   final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    final step = questionIndex + 1;
-    final progress = step / questionCount;
-    final percent = (progress * 100).round();
-
     return SizedBox(
-      height: 235,
+      height: 220,
       width: double.infinity,
       child: ClipPath(
         clipper: _OvalBottomClipper(),
@@ -199,50 +253,39 @@ class _AboutHero extends StatelessWidget {
                 ),
               ),
               Positioned(
-                right: 22,
-                top: 20,
+                left: 28,
+                top: 84,
                 child: Text(
-                  '%$percent',
-                  style: context.texts.titleMedium?.copyWith(
+                  'Hakkımda',
+                  style: context.texts.headlineSmall?.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
               Positioned(
-                left: 28,
-                right: 28,
-                top: 78,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hakkımda',
-                      style: context.texts.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                right: 34,
+                top: 46,
+                child: Container(
+                  width: 104,
+                  height: 104,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2A1255).withOpacity(.84),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x44000000),
+                        blurRadius: 22,
+                        offset: Offset(0, 12),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'SORU $step / $questionCount',
-                      style: context.texts.labelLarge?.copyWith(
-                        color: context.tokens.lime,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: .5,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 7,
-                        backgroundColor: Colors.white.withOpacity(.16),
-                        valueColor: AlwaysStoppedAnimation<Color>(context.tokens.lime),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 54,
+                    color: context.tokens.lime,
+                  ),
                 ),
               ),
             ],
@@ -308,12 +351,12 @@ class _OvalBottomClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height - 54);
+    path.lineTo(0, size.height - 46);
     path.quadraticBezierTo(
       size.width * .5,
-      size.height + 28,
+      size.height + 22,
       size.width,
-      size.height - 54,
+      size.height - 46,
     );
     path.lineTo(size.width, 0);
     path.close();
