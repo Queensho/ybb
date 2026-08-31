@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import '../otp/otp_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -232,7 +233,11 @@ class _LoginPanel extends StatelessWidget {
                     width: double.infinity,
                     child: FilledButton(
                       style: FilledButton.styleFrom(backgroundColor: context.tokens.lime, foregroundColor: context.colors.onSecondary),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(builder: (_) => const OtpScreen()),
+                        );
+                      },
                       child: const Text('Doğrulama kodu gönder'),
                     ),
                   ),
