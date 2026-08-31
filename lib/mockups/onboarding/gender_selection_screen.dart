@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import 'about_question_screen.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
   const GenderSelectionScreen({super.key});
@@ -130,7 +131,15 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     ),
                     SizedBox(height: context.tokens.spaceLg),
                     FilledButton(
-                      onPressed: selectedGender == null ? null : () {},
+                      onPressed: selectedGender == null
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const AboutQuestionScreen(),
+                                ),
+                              );
+                            },
                       style: FilledButton.styleFrom(
                         backgroundColor: context.tokens.lime,
                         foregroundColor: black,
