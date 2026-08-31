@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+export 'package:flutter/rendering.dart' show ScrollDirection;
 import 'app_tokens.dart';
 
 extension ThemeContextX on BuildContext {
