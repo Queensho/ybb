@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import '../onboarding/welcome_intro_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -139,7 +140,13 @@ class _OtpScreenState extends State<OtpScreen> {
                                   backgroundColor: context.tokens.lime,
                                   foregroundColor: context.colors.onSecondary,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) => const WelcomeIntroScreen(),
+                                    ),
+                                  );
+                                },
                                 child: const Text('Doğrula ve devam et'),
                               ),
                             ),
