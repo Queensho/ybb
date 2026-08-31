@@ -76,6 +76,7 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
   late Set<String> selected;
   bool doesntMatter = false;
   bool _heroVisible = true;
+  double _dragDistance = 0;
 
   @override
   void initState() {
@@ -85,16 +86,19 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
     if (doesntMatter) selected.clear();
   }
 
-  bool _onScroll(ScrollNotification notification) {
-    if (notification is UserScrollNotification) {
-      if (notification.direction == ScrollDirection.reverse && _heroVisible) {
-        setState(() => _heroVisible = false);
-      } else if (notification.direction == ScrollDirection.forward && !_heroVisible) {
-        setState(() => _heroVisible = true);
-      }
+  void _handlePointerMove(PointerMoveEvent event) {
+    _dragDistance += event.delta.dy;
+
+    if (_dragDistance <= -8 && _heroVisible) {
+      _dragDistance = 0;
+      setState(() => _heroVisible = false);
+    } else if (_dragDistance >= 8 && !_heroVisible) {
+      _dragDistance = 0;
+      setState(() => _heroVisible = true);
     }
-    return false;
   }
+
+  void _resetDrag(PointerEvent event) => _dragDistance = 0;
 
   void _toggle(String option) {
     setState(() {
@@ -119,73 +123,84 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
     return Scaffold(
       backgroundColor: black,
       body: SafeArea(
-        child: Column(children: [
-          AnimatedSize(
-            duration: const Duration(milliseconds: 320),
-            curve: Curves.easeOutCubic,
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              height: _heroVisible ? 210 : 0,
-              width: double.infinity,
-              child: ClipRect(child: AnimatedSlide(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
-                offset: _heroVisible ? Offset.zero : const Offset(0, -1.05),
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: _heroVisible ? 1 : 0,
-                  child: _PreferenceDetailHero(icon: widget.question.icon, onBack: () => Navigator.of(context).pop()),
-                ),
-              )),
-            ),
-          ),
-          Expanded(child: NotificationListener<ScrollNotification>(
-            onNotification: _onScroll,
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(context.tokens.spaceLg, 14, context.tokens.spaceLg, 120),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                if (!_heroVisible) Align(alignment: Alignment.centerLeft, child: IconButton.filledTonal(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back_rounded))),
-                Text(widget.question.title, style: context.texts.headlineLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900, height: 1.08)),
-                const SizedBox(height: 10),
-                Text('Karşınızdaki kişide aradığınız cevabı seçin.', style: context.texts.bodyLarge?.copyWith(color: const Color(0xFFC9C3D5))),
-                if (widget.question.multiSelect) ...[
-                  const SizedBox(height: 8),
-                  Text('Sizin için uygun olan birden fazla cevabı seçebilirsiniz.', style: context.texts.bodyMedium?.copyWith(color: const Color(0xFF8F879A))),
-                ],
-                const SizedBox(height: 22),
-                for (final option in widget.question.options) ...[
-                  _PreferenceOptionCard(label: option, selected: selected.contains(option), square: widget.question.multiSelect, onTap: () => _toggle(option)),
-                  const SizedBox(height: 12),
-                ],
-                const Divider(color: Color(0xFF31283D)),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: _toggleDoesntMatter,
-                  borderRadius: BorderRadius.circular(24),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: doesntMatter ? context.tokens.lime.withOpacity(.10) : const Color(0xFF14101D),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: doesntMatter ? context.tokens.lime : const Color(0xFF31283D), width: doesntMatter ? 2 : 1),
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerMove: _handlePointerMove,
+          onPointerUp: _resetDrag,
+          onPointerCancel: _resetDrag,
+          child: Column(children: [
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                height: _heroVisible ? 210 : 0,
+                width: double.infinity,
+                child: ClipRect(
+                  child: AnimatedSlide(
+                    duration: const Duration(milliseconds: 280),
+                    curve: Curves.easeOutCubic,
+                    offset: _heroVisible ? Offset.zero : const Offset(0, -1.15),
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 180),
+                      opacity: _heroVisible ? 1 : 0,
+                      child: _PreferenceDetailHero(icon: widget.question.icon, onBack: () => Navigator.of(context).pop()),
                     ),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Icon(Icons.remove_circle_outline_rounded, color: doesntMatter ? context.tokens.lime : const Color(0xFF9E95AA), size: 30),
-                      const SizedBox(width: 14),
-                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('Fark etmez', style: context.texts.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)),
-                        const SizedBox(height: 6),
-                        Text('Bu seçim tercihi etkinleştirir ve bir tercih hakkı kullanır.', style: context.texts.bodyMedium?.copyWith(color: const Color(0xFFC9C3D5), height: 1.45)),
-                      ])),
-                    ]),
                   ),
                 ),
-              ]),
+              ),
             ),
-          )),
-        ]),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(context.tokens.spaceLg, 14, context.tokens.spaceLg, 120),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  if (!_heroVisible)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton.filledTonal(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back_rounded)),
+                    ),
+                  Text(widget.question.title, style: context.texts.headlineLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w900, height: 1.08)),
+                  const SizedBox(height: 10),
+                  Text('Karşınızdaki kişide aradığınız cevabı seçin.', style: context.texts.bodyLarge?.copyWith(color: const Color(0xFFC9C3D5))),
+                  if (widget.question.multiSelect) ...[
+                    const SizedBox(height: 8),
+                    Text('Sizin için uygun olan birden fazla cevabı seçebilirsiniz.', style: context.texts.bodyMedium?.copyWith(color: const Color(0xFF8F879A))),
+                  ],
+                  const SizedBox(height: 22),
+                  for (final option in widget.question.options) ...[
+                    _PreferenceOptionCard(label: option, selected: selected.contains(option), square: widget.question.multiSelect, onTap: () => _toggle(option)),
+                    const SizedBox(height: 12),
+                  ],
+                  const Divider(color: Color(0xFF31283D)),
+                  const SizedBox(height: 10),
+                  InkWell(
+                    onTap: _toggleDoesntMatter,
+                    borderRadius: BorderRadius.circular(24),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: doesntMatter ? context.tokens.lime.withOpacity(.10) : const Color(0xFF14101D),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: doesntMatter ? context.tokens.lime : const Color(0xFF31283D), width: doesntMatter ? 2 : 1),
+                      ),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Icon(Icons.remove_circle_outline_rounded, color: doesntMatter ? context.tokens.lime : const Color(0xFF9E95AA), size: 30),
+                        const SizedBox(width: 14),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('Fark etmez', style: context.texts.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)),
+                          const SizedBox(height: 6),
+                          Text('Bu seçim tercihi etkinleştirir ve bir tercih hakkı kullanır.', style: context.texts.bodyMedium?.copyWith(color: const Color(0xFFC9C3D5), height: 1.45)),
+                        ])),
+                      ]),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          ]),
+        ),
       ),
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.fromLTRB(context.tokens.spaceLg, 10, context.tokens.spaceLg, 16),
