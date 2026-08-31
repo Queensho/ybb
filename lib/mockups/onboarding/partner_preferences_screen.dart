@@ -61,8 +61,12 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
       selections.values.where((value) => value.isNotEmpty).length;
 
   int get remainingRights => (2 - selectedPreferenceCount).clamp(0, 2);
+  bool get limitReached => selectedPreferenceCount >= 2;
 
   Future<void> _openQuestion(int index) async {
+    final alreadySelected = (selections[index] ?? <String>{}).isNotEmpty;
+    if (limitReached && !alreadySelected) return;
+
     final result = await Navigator.of(context).push<Set<String>>(
       MaterialPageRoute(
         builder: (_) => PartnerPreferenceDetailScreen(
@@ -76,6 +80,8 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
     setState(() => selections[index] = result);
 
     if (selectedPreferenceCount >= 2 && mounted) {
+      await Future<void>.delayed(const Duration(milliseconds: 220));
+      if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const MatchesScreen()),
         (route) => false,
@@ -86,6 +92,7 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     const black = Color(0xFF090712);
+
     return Scaffold(
       backgroundColor: black,
       body: SafeArea(
@@ -106,11 +113,16 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
                 ),
                 itemCount: questions.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, i) => _PreferenceTile(
-                  question: questions[i],
-                  selectedValues: selections[i] ?? <String>{},
-                  onTap: () => _openQuestion(i),
-                ),
+                itemBuilder: (context, i) {
+                  final selectedValues = selections[i] ?? <String>{};
+                  final locked = limitReached && selectedValues.isEmpty;
+                  return _PreferenceTile(
+                    question: questions[i],
+                    selectedValues: selectedValues,
+                    locked: locked,
+                    onTap: locked ? null : () => _openQuestion(i),
+                  );
+                },
               ),
             ),
           ],
@@ -600,80 +612,101 @@ class _PreferenceTile extends StatelessWidget {
   const _PreferenceTile({
     required this.question,
     required this.selectedValues,
+    required this.locked,
     required this.onTap,
   });
 
   final _PreferenceQuestion question;
   final Set<String> selectedValues;
-  final VoidCallback onTap;
+  final bool locked;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final hasSelection = selectedValues.isNotEmpty;
-    final subtitle = hasSelection ? selectedValues.join(', ') : 'Henüz seçilmedi';
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF14101D),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xFF31283D)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: const Color(0xFF21172F),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(question.icon, color: context.tokens.lime),
+    final subtitle = locked
+        ? '2 tercih hakkınız doldu'
+        : hasSelection
+            ? selectedValues.join(', ')
+            : 'Henüz seçilmedi';
+
+    return Opacity(
+      opacity: locked ? .48 : 1,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF14101D),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: hasSelection
+                  ? context.tokens.lime.withOpacity(.7)
+                  : const Color(0xFF31283D),
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    question.title,
-                    style: context.texts.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    subtitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.texts.bodyMedium?.copyWith(
-                      color: hasSelection
-                          ? context.tokens.lime
-                          : const Color(0xFF9E95AA),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              children: [
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Color(0xFFC9C3D5),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF21172F),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                Text(
-                  'Seç',
-                  style: context.texts.labelMedium?.copyWith(
-                    color: const Color(0xFFC9C3D5),
-                  ),
+                child: Icon(
+                  locked ? Icons.lock_rounded : question.icon,
+                  color: locked ? const Color(0xFF8D8597) : context.tokens.lime,
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      question.title,
+                      style: context.texts.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.texts.bodyMedium?.copyWith(
+                        color: hasSelection
+                            ? context.tokens.lime
+                            : const Color(0xFF9E95AA),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              locked
+                  ? const Icon(Icons.lock_outline_rounded, color: Color(0xFF8D8597))
+                  : Column(
+                      children: [
+                        const Icon(
+                          Icons.chevron_right_rounded,
+                          color: Color(0xFFC9C3D5),
+                        ),
+                        Text(
+                          hasSelection ? 'Seçildi' : 'Seç',
+                          style: context.texts.labelMedium?.copyWith(
+                            color: hasSelection
+                                ? context.tokens.lime
+                                : const Color(0xFFC9C3D5),
+                          ),
+                        ),
+                      ],
+                    ),
+            ],
+          ),
         ),
       ),
     );
