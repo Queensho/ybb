@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import 'partner_preferences_screen.dart';
 
 class AboutQuestionScreen extends StatefulWidget {
   const AboutQuestionScreen({super.key});
@@ -68,8 +69,10 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
       setState(() => currentIndex++);
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Hakkımda soruları tamamlandı.')),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) => const PartnerPreferencesScreen(),
+      ),
     );
   }
 
