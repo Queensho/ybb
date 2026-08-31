@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import 'gender_selection_screen.dart';
 
 class WelcomeIntroScreen extends StatelessWidget {
   const WelcomeIntroScreen({super.key});
@@ -130,10 +131,16 @@ class WelcomeIntroScreen extends StatelessWidget {
                           foregroundColor: const Color(0xFF100B1E),
                           padding: const EdgeInsets.symmetric(vertical: 18),
                         ),
-                        onPressed: () {},
-                        child: Row(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const GenderSelectionScreen(),
+                            ),
+                          );
+                        },
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text('Hazırsanız başlayalım'),
                             SizedBox(width: 10),
                             Icon(Icons.arrow_forward_rounded),
