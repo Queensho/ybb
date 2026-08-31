@@ -29,7 +29,7 @@ class _HeroArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 330,
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -42,33 +42,36 @@ class _HeroArea extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Positioned(left: -46, top: 24, child: _Asset('assets/3d/07_lime_blob.svg', 150)),
-            Positioned(right: -34, bottom: 20, child: _Asset('assets/3d/09_purple_blob.svg', 150)),
-            Positioned(right: 18, top: 34, child: Transform.rotate(angle: .12, child: _Asset('assets/3d/04_message_bubble.svg', 92))),
-            Positioned(left: 18, bottom: 30, child: Transform.rotate(angle: -.14, child: _Asset('assets/3d/05_security_shield.svg', 92))),
-            Positioned(right: 54, bottom: 76, child: _Asset('assets/3d/06_lime_sphere.svg', 56)),
+            Positioned(left: -58, top: 18, child: _Asset('assets/3d/07_lime_blob.svg', 138)),
+            Positioned(right: -46, bottom: 8, child: _Asset('assets/3d/09_purple_blob.svg', 138)),
+            Positioned(right: 12, top: 28, child: Transform.rotate(angle: .10, child: _Asset('assets/3d/04_message_bubble.svg', 76))),
+            Positioned(left: 18, bottom: 24, child: Transform.rotate(angle: -.10, child: _Asset('assets/3d/05_security_shield.svg', 72))),
+            Positioned(right: 52, bottom: 64, child: _Asset('assets/3d/06_lime_sphere.svg', 44)),
             Center(
               child: SizedBox(
-                width: 250,
-                height: 285,
+                width: 290,
+                height: 300,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     Transform.rotate(
-                      angle: -.10,
-                      child: SvgPicture.asset('assets/3d/01_phone.svg', width: 220),
+                      angle: -.07,
+                      child: SvgPicture.asset('assets/3d/01_phone.svg', width: 248),
                     ),
                     Positioned(
                       left: 12,
-                      top: 78,
-                      child: SvgPicture.asset('assets/3d/02_profile_user.svg', width: 118),
+                      top: 96,
+                      child: Transform.rotate(
+                        angle: -.04,
+                        child: SvgPicture.asset('assets/3d/02_profile_user.svg', width: 112),
+                      ),
                     ),
                     Positioned(
-                      right: 2,
-                      bottom: 18,
+                      right: 4,
+                      bottom: 28,
                       child: Transform.rotate(
-                        angle: .09,
-                        child: SvgPicture.asset('assets/3d/03_lock.svg', width: 105),
+                        angle: .06,
+                        child: SvgPicture.asset('assets/3d/03_lock.svg', width: 92),
                       ),
                     ),
                   ],
@@ -97,7 +100,7 @@ class _LoginPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(0, -26),
+      offset: const Offset(0, -22),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.fromLTRB(
@@ -118,14 +121,17 @@ class _LoginPanel extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Transform.translate(
-                offset: const Offset(0, -38),
+                offset: const Offset(0, -34),
                 child: Container(
-                  width: 78,
-                  height: 78,
-                  padding: const EdgeInsets.all(5),
+                  width: 72,
+                  height: 72,
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: context.colors.surface,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFB7FF2A), Color(0xFF8FE600)],
+                    ),
                     shape: BoxShape.circle,
+                    border: Border.all(color: context.colors.surface, width: 7),
                     boxShadow: const [
                       BoxShadow(color: Color(0x55000000), blurRadius: 20, offset: Offset(0, 8)),
                     ],
@@ -135,7 +141,7 @@ class _LoginPanel extends StatelessWidget {
               ),
             ),
             Transform.translate(
-              offset: const Offset(0, -24),
+              offset: const Offset(0, -18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -204,7 +210,7 @@ class _LoginPanel extends StatelessWidget {
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: () {},
-                      icon: SvgPicture.asset('assets/3d/04_message_bubble.svg', width: 24),
+                      icon: SvgPicture.asset('assets/3d/04_message_bubble.svg', width: 22),
                       label: const Text('Başka bir yöntemle giriş yap'),
                     ),
                   ),
@@ -212,7 +218,7 @@ class _LoginPanel extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SvgPicture.asset('assets/3d/05_security_shield.svg', width: 26),
+                      SvgPicture.asset('assets/3d/05_security_shield.svg', width: 24),
                       SizedBox(width: context.tokens.spaceSm),
                       Expanded(
                         child: Text(
