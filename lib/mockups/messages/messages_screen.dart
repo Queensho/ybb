@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import '../questions/daily_questions_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -43,7 +44,19 @@ class _ChatScreenState extends State<ChatScreen>{final input=TextEditingControll
 class _TheirBubble extends StatelessWidget{const _TheirBubble(this.text);final String text;@override Widget build(BuildContext context)=>Align(alignment:Alignment.centerLeft,child:Container(margin:const EdgeInsets.only(bottom:10,right:55),padding:const EdgeInsets.symmetric(horizontal:15,vertical:12),decoration:BoxDecoration(color:const Color(0xFF1A1722),borderRadius:BorderRadius.circular(18)),child:Text(text,style:const TextStyle(color:Colors.white,height:1.35))));}
 class _MyBubble extends StatelessWidget{const _MyBubble(this.text);final String text;@override Widget build(BuildContext context)=>Align(alignment:Alignment.centerRight,child:Container(margin:const EdgeInsets.only(bottom:10,left:55),padding:const EdgeInsets.symmetric(horizontal:15,vertical:12),decoration:BoxDecoration(color:const Color(0xFF6D21D7),borderRadius:BorderRadius.circular(18)),child:Text(text,style:const TextStyle(color:Colors.white,height:1.35))));}
 
-class _MessagesBottomNav extends StatelessWidget{const _MessagesBottomNav();@override Widget build(BuildContext context)=>SafeArea(top:false,child:Container(padding:const EdgeInsets.fromLTRB(18,12,18,10),decoration:const BoxDecoration(color:Color(0xFF0E0C15),borderRadius:BorderRadius.vertical(top:Radius.circular(30))),child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[_Nav(icon:Icons.favorite_border_rounded,label:'Eşleşmeler',onTap:()=>Navigator.of(context).pop()),const _Nav(icon:Icons.quiz_outlined,label:'Sorular'),const _Nav(icon:Icons.chat_bubble_rounded,label:'Mesajlar',active:true),const _Nav(icon:Icons.person_outline_rounded,label:'Profil')])));}
+class _MessagesBottomNav extends StatelessWidget{
+  const _MessagesBottomNav();
+  @override Widget build(BuildContext context)=>SafeArea(top:false,child:Container(
+    padding:const EdgeInsets.fromLTRB(18,12,18,10),
+    decoration:const BoxDecoration(color:Color(0xFF0E0C15),borderRadius:BorderRadius.vertical(top:Radius.circular(30))),
+    child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
+      _Nav(icon:Icons.favorite_border_rounded,label:'Eşleşmeler',onTap:()=>Navigator.of(context).pop()),
+      _Nav(icon:Icons.quiz_outlined,label:'Sorular',onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const DailyQuestionsScreen()))),
+      const _Nav(icon:Icons.chat_bubble_rounded,label:'Mesajlar',active:true),
+      const _Nav(icon:Icons.person_outline_rounded,label:'Profil'),
+    ]),
+  ));
+}
 class _Nav extends StatelessWidget{const _Nav({required this.icon,required this.label,this.active=false,this.onTap});final IconData icon;final String label;final bool active;final VoidCallback? onTap;@override Widget build(BuildContext context)=>InkWell(onTap:onTap,borderRadius:BorderRadius.circular(18),child:Padding(padding:const EdgeInsets.symmetric(horizontal:8,vertical:4),child:Column(mainAxisSize:MainAxisSize.min,children:[Icon(icon,color:active?context.tokens.lime:const Color(0xFFA49CAE),size:27),const SizedBox(height:5),Text(label,style:TextStyle(color:active?context.tokens.lime:const Color(0xFFA49CAE),fontWeight:active?FontWeight.w800:FontWeight.w500,fontSize:12)),if(active)...[const SizedBox(height:6),Container(width:38,height:4,decoration:BoxDecoration(color:context.tokens.lime,borderRadius:BorderRadius.circular(99)))]])));}
 class _OvalClipper extends CustomClipper<Path>{@override Path getClip(Size s){final p=Path()..lineTo(0,s.height-42);p.quadraticBezierTo(s.width*.5,s.height+20,s.width,s.height-42);p..lineTo(s.width,0)..close();return p;}@override bool shouldReclip(covariant CustomClipper<Path> oldClipper)=>false;}
 class _ChatData{const _ChatData(this.name,this.message,this.time,this.image,{this.online=false,this.verified=false,this.unread=0});final String name,message,time,image;final bool online,verified;final int unread;}
