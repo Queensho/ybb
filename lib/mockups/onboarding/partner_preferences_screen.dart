@@ -56,7 +56,9 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
     ),
   ];
 
-  int get selectedPreferenceCount => selections.values.where((value) => value.isNotEmpty).length;
+  int get selectedPreferenceCount =>
+      selections.values.where((value) => value.isNotEmpty).length;
+
   int get remainingRights => (2 - selectedPreferenceCount).clamp(0, 2);
 
   Future<void> _openQuestion(int index) async {
@@ -69,91 +71,33 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen> {
       ),
     );
     if (result == null) return;
-    setState(() {
-      selections[index] = result;
-    });
+    setState(() => selections[index] = result);
   }
 
   @override
   Widget build(BuildContext context) {
     const black = Color(0xFF090712);
+
     return Scaffold(
       backgroundColor: black,
       body: SafeArea(
         child: Column(
           children: [
-            _PartnerHero(onBack: () => Navigator.of(context).pop()),
+            _PartnerHero(
+              onBack: () => Navigator.of(context).pop(),
+              selectedCount: selectedPreferenceCount,
+              remainingRights: remainingRights,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(
                   context.tokens.spaceLg,
-                  12,
+                  14,
                   context.tokens.spaceLg,
                   40,
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF14101D),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFF31283D)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.favorite_border_rounded, color: context.tokens.lime, size: 30),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  'Sizin için en önemli iki tercihi seçin. Her seçim bir tercih hakkı kullanır.',
-                                  style: context.texts.titleMedium?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.45,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 18),
-                          Text(
-                            '2 başlangıç tercihinden $selectedPreferenceCount tanesi seçildi',
-                            style: context.texts.titleSmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(999),
-                            child: LinearProgressIndicator(
-                              value: selectedPreferenceCount / 2,
-                              minHeight: 7,
-                              backgroundColor: const Color(0xFF241B31),
-                              valueColor: AlwaysStoppedAnimation<Color>(context.tokens.lime),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              const Icon(Icons.confirmation_number_outlined, color: Color(0xFF9E95AA)),
-                              const SizedBox(width: 10),
-                              Text(
-                                '$remainingRights tercih hakkınız var.',
-                                style: context.texts.bodyLarge?.copyWith(color: const Color(0xFFC9C3D5)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 18),
                     for (var i = 0; i < questions.length; i++) ...[
                       _PreferenceTile(
                         question: questions[i],
@@ -184,10 +128,12 @@ class PartnerPreferenceDetailScreen extends StatefulWidget {
   final Set<String> initialSelection;
 
   @override
-  State<PartnerPreferenceDetailScreen> createState() => _PartnerPreferenceDetailScreenState();
+  State<PartnerPreferenceDetailScreen> createState() =>
+      _PartnerPreferenceDetailScreenState();
 }
 
-class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailScreen> {
+class _PartnerPreferenceDetailScreenState
+    extends State<PartnerPreferenceDetailScreen> {
   late Set<String> selected;
   bool doesntMatter = false;
 
@@ -251,13 +197,17 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
                     const SizedBox(height: 10),
                     Text(
                       'Karşınızdaki kişide aradığınız cevabı seçin.',
-                      style: context.texts.bodyLarge?.copyWith(color: const Color(0xFFC9C3D5)),
+                      style: context.texts.bodyLarge?.copyWith(
+                        color: const Color(0xFFC9C3D5),
+                      ),
                     ),
                     if (widget.question.multiSelect) ...[
                       const SizedBox(height: 8),
                       Text(
                         'Sizin için uygun olan birden fazla cevabı seçebilirsiniz.',
-                        style: context.texts.bodyMedium?.copyWith(color: const Color(0xFF8F879A)),
+                        style: context.texts.bodyMedium?.copyWith(
+                          color: const Color(0xFF8F879A),
+                        ),
                       ),
                     ],
                     const SizedBox(height: 22),
@@ -271,7 +221,7 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
                       const SizedBox(height: 12),
                     ],
                     const SizedBox(height: 4),
-                    Divider(color: const Color(0xFF31283D)),
+                    const Divider(color: Color(0xFF31283D)),
                     const SizedBox(height: 10),
                     InkWell(
                       onTap: _toggleDoesntMatter,
@@ -280,10 +230,14 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
                         duration: const Duration(milliseconds: 180),
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: doesntMatter ? context.tokens.lime.withOpacity(.10) : const Color(0xFF14101D),
+                          color: doesntMatter
+                              ? context.tokens.lime.withOpacity(.10)
+                              : const Color(0xFF14101D),
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: doesntMatter ? context.tokens.lime : const Color(0xFF31283D),
+                            color: doesntMatter
+                                ? context.tokens.lime
+                                : const Color(0xFF31283D),
                             width: doesntMatter ? 2 : 1,
                           ),
                         ),
@@ -292,7 +246,9 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
                           children: [
                             Icon(
                               Icons.remove_circle_outline_rounded,
-                              color: doesntMatter ? context.tokens.lime : const Color(0xFF9E95AA),
+                              color: doesntMatter
+                                  ? context.tokens.lime
+                                  : const Color(0xFF9E95AA),
                               size: 30,
                             ),
                             const SizedBox(width: 14),
@@ -330,7 +286,12 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
         ),
       ),
       bottomNavigationBar: SafeArea(
-        minimum: EdgeInsets.fromLTRB(context.tokens.spaceLg, 10, context.tokens.spaceLg, 16),
+        minimum: EdgeInsets.fromLTRB(
+          context.tokens.spaceLg,
+          10,
+          context.tokens.spaceLg,
+          16,
+        ),
         child: SizedBox(
           height: 58,
           child: FilledButton(
@@ -371,13 +332,20 @@ class _PreferenceQuestion {
 }
 
 class _PartnerHero extends StatelessWidget {
-  const _PartnerHero({required this.onBack});
+  const _PartnerHero({
+    required this.onBack,
+    required this.selectedCount,
+    required this.remainingRights,
+  });
+
   final VoidCallback onBack;
+  final int selectedCount;
+  final int remainingRights;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: 350,
       width: double.infinity,
       child: ClipPath(
         clipper: _OvalBottomClipper(),
@@ -386,7 +354,11 @@ class _PartnerHero extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF9A4DFF), Color(0xFF6D21D7), Color(0xFF45108D)],
+              colors: [
+                Color(0xFF9A4DFF),
+                Color(0xFF6D21D7),
+                Color(0xFF45108D),
+              ],
             ),
           ),
           child: Stack(
@@ -401,19 +373,90 @@ class _PartnerHero extends StatelessWidget {
               ),
               Positioned(
                 left: 28,
-                top: 88,
+                right: 28,
+                top: 68,
                 child: Text(
                   'Partner Tercihleri',
-                  style: context.texts.headlineSmall?.copyWith(
+                  style: context.texts.headlineMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
               Positioned(
-                right: 34,
-                top: 46,
-                child: _HeroIcon(icon: Icons.tune_rounded),
+                left: 28,
+                right: 28,
+                top: 120,
+                child: Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(.08),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.white.withOpacity(.16)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.favorite_border_rounded,
+                            color: context.tokens.lime,
+                            size: 30,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Sizin için en önemli iki tercihi seçin. Her seçim bir tercih hakkı kullanır.',
+                              style: context.texts.titleMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '2 başlangıç tercihinden $selectedCount tanesi seçildi',
+                        style: context.texts.titleSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(999),
+                        child: LinearProgressIndicator(
+                          value: selectedCount / 2,
+                          minHeight: 7,
+                          backgroundColor: Colors.white.withOpacity(.18),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            context.tokens.lime,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.confirmation_number_outlined,
+                            color: Color(0xFFE2DAEC),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            '$remainingRights tercih hakkınız var.',
+                            style: context.texts.bodyLarge?.copyWith(
+                              color: const Color(0xFFE2DAEC),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -424,7 +467,11 @@ class _PartnerHero extends StatelessWidget {
 }
 
 class _PreferenceDetailHero extends StatelessWidget {
-  const _PreferenceDetailHero({required this.icon, required this.onBack});
+  const _PreferenceDetailHero({
+    required this.icon,
+    required this.onBack,
+  });
+
   final IconData icon;
   final VoidCallback onBack;
 
@@ -440,7 +487,11 @@ class _PreferenceDetailHero extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF9A4DFF), Color(0xFF6D21D7), Color(0xFF45108D)],
+              colors: [
+                Color(0xFF9A4DFF),
+                Color(0xFF6D21D7),
+                Color(0xFF45108D),
+              ],
             ),
           ),
           child: Stack(
@@ -479,6 +530,7 @@ class _PreferenceDetailHero extends StatelessWidget {
 
 class _HeroIcon extends StatelessWidget {
   const _HeroIcon({required this.icon});
+
   final IconData icon;
 
   @override
@@ -551,7 +603,9 @@ class _PreferenceTile extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: context.texts.bodyMedium?.copyWith(
-                      color: hasSelection ? context.tokens.lime : const Color(0xFF9E95AA),
+                      color: hasSelection
+                          ? context.tokens.lime
+                          : const Color(0xFF9E95AA),
                     ),
                   ),
                 ],
@@ -560,8 +614,16 @@ class _PreferenceTile extends StatelessWidget {
             const SizedBox(width: 8),
             Column(
               children: [
-                const Icon(Icons.chevron_right_rounded, color: Color(0xFFC9C3D5)),
-                Text('Seç', style: context.texts.labelMedium?.copyWith(color: const Color(0xFFC9C3D5))),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Color(0xFFC9C3D5),
+                ),
+                Text(
+                  'Seç',
+                  style: context.texts.labelMedium?.copyWith(
+                    color: const Color(0xFFC9C3D5),
+                  ),
+                ),
               ],
             ),
           ],
@@ -593,7 +655,9 @@ class _PreferenceOptionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         decoration: BoxDecoration(
-          color: selected ? context.tokens.lime.withOpacity(.10) : const Color(0xFF14101D),
+          color: selected
+              ? context.tokens.lime.withOpacity(.10)
+              : const Color(0xFF14101D),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: selected ? context.tokens.lime : const Color(0xFF31283D),
@@ -604,8 +668,12 @@ class _PreferenceOptionCard extends StatelessWidget {
           children: [
             Icon(
               square
-                  ? (selected ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded)
-                  : (selected ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded),
+                  ? (selected
+                      ? Icons.check_box_rounded
+                      : Icons.check_box_outline_blank_rounded)
+                  : (selected
+                      ? Icons.radio_button_checked_rounded
+                      : Icons.radio_button_unchecked_rounded),
               color: selected ? context.tokens.lime : const Color(0xFF9E95AA),
               size: 30,
             ),
