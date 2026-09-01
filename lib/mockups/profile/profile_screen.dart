@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
+import '../onboarding/about_question_screen.dart';
+import '../onboarding/partner_preferences_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -43,7 +45,9 @@ class ProfileScreen extends StatelessWidget {
               title: 'Hakkımda cevapların',
               subtitle: 'Kendin hakkında verdiğin cevapları görüntüle ve düzenle',
               trailing: '6 cevap',
-              onTap: () {},
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AboutQuestionScreen()),
+              ),
             ),
             const SizedBox(height: 12),
             _ActionCard(
@@ -51,7 +55,9 @@ class ProfileScreen extends StatelessWidget {
               title: 'Partner tercihlerin',
               subtitle: 'Eşleşmelerde senin için önemli olan tercihleri yönet',
               trailing: '2 aktif',
-              onTap: () {},
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const PartnerPreferencesScreen()),
+              ),
             ),
             const SizedBox(height: 12),
             _ActionCard(
