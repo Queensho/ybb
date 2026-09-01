@@ -5,60 +5,494 @@ import '../profile/profile_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
-  @override State<MessagesScreen> createState()=>_MessagesScreenState();
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
 }
 
-class _MessagesScreenState extends State<MessagesScreen>{
-  final controller=TextEditingController();
-  @override void dispose(){controller.dispose();super.dispose();}
-  @override Widget build(BuildContext context){
-    final q=controller.text.toLowerCase();
-    final chats=_chats.where((e)=>q.isEmpty||e.name.toLowerCase().contains(q)||e.message.toLowerCase().contains(q)).toList();
+class _MessagesScreenState extends State<MessagesScreen> {
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final q = controller.text.toLowerCase();
+    final chats = _chats
+        .where((e) => q.isEmpty || e.name.toLowerCase().contains(q) || e.message.toLowerCase().contains(q))
+        .toList();
+
     return Scaffold(
-      backgroundColor:context.colors.surface,
-      body:SafeArea(child:Column(children:[
-        const _Hero(),
-        Padding(padding:const EdgeInsets.fromLTRB(20,8,20,10),child:TextField(controller:controller,onChanged:(_)=>setState((){}),style:TextStyle(color:context.colors.onSurface),decoration:InputDecoration(hintText:'Mesajlarda ara',prefixIcon:const Icon(Icons.search_rounded),filled:true,fillColor:context.colors.surfaceContainer,border:OutlineInputBorder(borderRadius:BorderRadius.circular(22),borderSide:BorderSide(color:context.colors.outlineVariant)),enabledBorder:OutlineInputBorder(borderRadius:BorderRadius.circular(22),borderSide:BorderSide(color:context.colors.outlineVariant))))),),
-        Padding(padding:const EdgeInsets.symmetric(horizontal:20,vertical:6),child:Row(children:[Text('Sohbetler',style:context.texts.titleLarge?.copyWith(color:context.colors.onSurface,fontWeight:FontWeight.w900)),const Spacer(),Text('${chats.length} konuşma',style:TextStyle(color:context.colors.onSurfaceVariant,fontWeight:FontWeight.w600))])),
-        Expanded(child:ListView.separated(padding:const EdgeInsets.fromLTRB(16,8,16,110),itemCount:chats.length,separatorBuilder:(_,__)=>const SizedBox(height:7),itemBuilder:(context,i)=>_ChatTile(data:chats[i],onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>ChatScreen(data:chats[i])))))),
-      ])),
-      bottomNavigationBar:const _MessagesBottomNav(),
+      backgroundColor: context.colors.surface,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const _Hero(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
+              child: TextField(
+                controller: controller,
+                onChanged: (_) => setState(() {}),
+                style: TextStyle(color: context.colors.onSurface),
+                decoration: InputDecoration(
+                  hintText: 'Mesajlarda ara',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  filled: true,
+                  fillColor: context.colors.surfaceContainer,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22),
+                    borderSide: BorderSide(color: context.colors.outlineVariant),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22),
+                    borderSide: BorderSide(color: context.colors.outlineVariant),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+              child: Row(
+                children: [
+                  Text(
+                    'Sohbetler',
+                    style: context.texts.titleLarge?.copyWith(
+                      color: context.colors.onSurface,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${chats.length} konuşma',
+                    style: TextStyle(
+                      color: context.colors.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
+                itemCount: chats.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 7),
+                itemBuilder: (context, i) => _ChatTile(
+                  data: chats[i],
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => ChatScreen(data: chats[i])),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: const _MessagesBottomNav(),
     );
   }
 }
 
-class _Hero extends StatelessWidget{
+class _Hero extends StatelessWidget {
   const _Hero();
-  @override Widget build(BuildContext context)=>SizedBox(height:190,width:double.infinity,child:ClipPath(clipper:_OvalClipper(),child:Container(decoration:const BoxDecoration(gradient:LinearGradient(begin:Alignment.topLeft,end:Alignment.bottomRight,colors:[Color(0xFF9A4DFF),Color(0xFF6D21D7),Color(0xFF45108D)])),child:Center(child:Padding(padding:const EdgeInsets.only(bottom:28),child:Column(mainAxisSize:MainAxisSize.min,children:[Icon(Icons.forum_rounded,color:context.tokens.lime,size:46),const SizedBox(height:7),const Text('Mesajlar',style:TextStyle(color:Colors.white,fontSize:31,fontWeight:FontWeight.w900)),const SizedBox(height:4),const Text('Sohbeti başlat, birbirinizi keşfedin',style:TextStyle(color:Color(0xFFD9CEE7),fontSize:14))]))))));
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: 190,
+        width: double.infinity,
+        child: ClipPath(
+          clipper: _OvalClipper(),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF9A4DFF), Color(0xFF6D21D7), Color(0xFF45108D)],
+              ),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.forum_rounded, color: context.tokens.lime, size: 46),
+                    const SizedBox(height: 7),
+                    const Text('Mesajlar', style: TextStyle(color: Colors.white, fontSize: 31, fontWeight: FontWeight.w900)),
+                    const SizedBox(height: 4),
+                    const Text('Sohbeti başlat, birbirinizi keşfedin', style: TextStyle(color: Color(0xFFD9CEE7), fontSize: 14)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 }
 
-class _ChatTile extends StatelessWidget{
-  const _ChatTile({required this.data,required this.onTap});final _ChatData data;final VoidCallback onTap;
-  @override Widget build(BuildContext context)=>Material(color:Colors.transparent,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:Ink(padding:const EdgeInsets.all(13),decoration:BoxDecoration(color:data.unread>0?context.colors.primaryContainer.withOpacity(context.isDark ? .22 : .35):context.colors.surfaceContainer,borderRadius:BorderRadius.circular(24),border:Border.all(color:data.unread>0?context.colors.primary.withOpacity(.45):context.colors.outlineVariant)),child:Row(children:[
-    Stack(children:[Container(width:62,height:62,padding:const EdgeInsets.all(2),decoration:BoxDecoration(shape:BoxShape.circle,border:Border.all(color:data.online?context.tokens.lime:context.colors.outline,width:2)),child:ClipOval(child:Image.network(data.image,fit:BoxFit.cover,errorBuilder:(_,__,___)=>ColoredBox(color:context.colors.surfaceContainerHighest,child:Icon(Icons.person,color:context.colors.onSurfaceVariant))))),if(data.online)Positioned(right:1,bottom:2,child:Container(width:15,height:15,decoration:BoxDecoration(shape:BoxShape.circle,color:context.tokens.lime,border:Border.all(color:context.colors.surfaceContainer,width:3))))]),
-    const SizedBox(width:13),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Row(children:[Text(data.name,style:TextStyle(color:context.colors.onSurface,fontSize:17,fontWeight:data.unread>0?FontWeight.w900:FontWeight.w700)),if(data.verified)...[const SizedBox(width:5),const Icon(Icons.verified_rounded,color:Color(0xFF8B34FF),size:17)],const Spacer(),Text(data.time,style:TextStyle(color:data.unread>0?(context.isDark?context.tokens.lime:context.colors.primary):context.colors.onSurfaceVariant,fontSize:12,fontWeight:FontWeight.w700))]),const SizedBox(height:6),Row(children:[Expanded(child:Text(data.message,maxLines:1,overflow:TextOverflow.ellipsis,style:TextStyle(color:context.colors.onSurfaceVariant,fontWeight:data.unread>0?FontWeight.w700:FontWeight.w500))),if(data.unread>0)Container(margin:const EdgeInsets.only(left:8),constraints:const BoxConstraints(minWidth:23,minHeight:23),alignment:Alignment.center,padding:const EdgeInsets.symmetric(horizontal:6),decoration:BoxDecoration(color:context.tokens.lime,borderRadius:BorderRadius.circular(99)),child:Text('${data.unread}',style:TextStyle(color:context.colors.onSecondary,fontSize:11,fontWeight:FontWeight.w900)))])]))
-  ]))));
+class _ChatTile extends StatelessWidget {
+  const _ChatTile({required this.data, required this.onTap});
+  final _ChatData data;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Ink(
+            padding: const EdgeInsets.all(13),
+            decoration: BoxDecoration(
+              color: data.unread > 0
+                  ? context.colors.primaryContainer.withOpacity(context.isDark ? .22 : .35)
+                  : context.colors.surfaceContainer,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: data.unread > 0 ? context.colors.primary.withOpacity(.45) : context.colors.outlineVariant,
+              ),
+            ),
+            child: Row(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      width: 62,
+                      height: 62,
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: data.online ? context.tokens.lime : context.colors.outline, width: 2),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          data.image,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => ColoredBox(
+                            color: context.colors.surfaceContainerHighest,
+                            child: Icon(Icons.person, color: context.colors.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (data.online)
+                      Positioned(
+                        right: 1,
+                        bottom: 2,
+                        child: Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: context.tokens.lime,
+                            border: Border.all(color: context.colors.surfaceContainer, width: 3),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            data.name,
+                            style: TextStyle(
+                              color: context.colors.onSurface,
+                              fontSize: 17,
+                              fontWeight: data.unread > 0 ? FontWeight.w900 : FontWeight.w700,
+                            ),
+                          ),
+                          if (data.verified) ...[
+                            const SizedBox(width: 5),
+                            const Icon(Icons.verified_rounded, color: Color(0xFF8B34FF), size: 17),
+                          ],
+                          const Spacer(),
+                          Text(
+                            data.time,
+                            style: TextStyle(
+                              color: data.unread > 0
+                                  ? (context.isDark ? context.tokens.lime : context.colors.primary)
+                                  : context.colors.onSurfaceVariant,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              data.message,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: context.colors.onSurfaceVariant,
+                                fontWeight: data.unread > 0 ? FontWeight.w700 : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          if (data.unread > 0)
+                            Container(
+                              margin: const EdgeInsets.only(left: 8),
+                              constraints: const BoxConstraints(minWidth: 23, minHeight: 23),
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              decoration: BoxDecoration(color: context.tokens.lime, borderRadius: BorderRadius.circular(99)),
+                              child: Text(
+                                '${data.unread}',
+                                style: TextStyle(color: context.colors.onSecondary, fontSize: 11, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
-class ChatScreen extends StatefulWidget{const ChatScreen({super.key,required this.data});final _ChatData data;@override State<ChatScreen> createState()=>_ChatScreenState();}
-class _ChatScreenState extends State<ChatScreen>{final input=TextEditingController();final List<String> sent=[];@override void dispose(){input.dispose();super.dispose();}@override Widget build(BuildContext context)=>Scaffold(backgroundColor:context.colors.surface,appBar:AppBar(backgroundColor:context.colors.surfaceContainer,foregroundColor:context.colors.onSurface,titleSpacing:0,title:Row(children:[CircleAvatar(radius:20,backgroundImage:NetworkImage(widget.data.image)),const SizedBox(width:10),Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(widget.data.name,style:const TextStyle(fontSize:16,fontWeight:FontWeight.w900)),Text(widget.data.online?'Şu an aktif':'Yakın zamanda aktif',style:TextStyle(fontSize:11,color:widget.data.online?(context.isDark?context.tokens.lime:context.colors.primary):context.colors.onSurfaceVariant))])]),actions:[IconButton(onPressed:(){},icon:const Icon(Icons.more_horiz_rounded))]),body:Column(children:[Expanded(child:ListView(padding:const EdgeInsets.all(18),children:[const _TheirBubble('Merhaba 👋 Profilindeki seyahat ilgisini gördüm.'),const _MyBubble('Selam! Evet, yeni yerler keşfetmeyi çok seviyorum.'),_TheirBubble(widget.data.message),...sent.map((e)=>_MyBubble(e))])),SafeArea(top:false,child:Padding(padding:const EdgeInsets.fromLTRB(12,8,12,12),child:Row(children:[IconButton(onPressed:(){},icon:Icon(Icons.add_circle_outline_rounded,color:context.isDark?context.tokens.lime:context.colors.primary)),Expanded(child:TextField(controller:input,style:TextStyle(color:context.colors.onSurface),decoration:InputDecoration(hintText:'Mesaj yaz...',filled:true,fillColor:context.colors.surfaceContainer,border:OutlineInputBorder(borderRadius:BorderRadius.circular(24),borderSide:BorderSide.none))),),const SizedBox(width:8),IconButton.filled(onPressed:(){final t=input.text.trim();if(t.isEmpty)return;setState((){sent.add(t);input.clear();});},style:IconButton.styleFrom(backgroundColor:context.tokens.lime,foregroundColor:context.colors.onSecondary),icon:const Icon(Icons.send_rounded))])))]));}
-class _TheirBubble extends StatelessWidget{const _TheirBubble(this.text);final String text;@override Widget build(BuildContext context)=>Align(alignment:Alignment.centerLeft,child:Container(margin:const EdgeInsets.only(bottom:10,right:55),padding:const EdgeInsets.symmetric(horizontal:15,vertical:12),decoration:BoxDecoration(color:context.colors.surfaceContainer,borderRadius:BorderRadius.circular(18)),child:Text(text,style:TextStyle(color:context.colors.onSurface,height:1.35))));}
-class _MyBubble extends StatelessWidget{const _MyBubble(this.text);final String text;@override Widget build(BuildContext context)=>Align(alignment:Alignment.centerRight,child:Container(margin:const EdgeInsets.only(bottom:10,left:55),padding:const EdgeInsets.symmetric(horizontal:15,vertical:12),decoration:BoxDecoration(color:context.colors.primary,borderRadius:BorderRadius.circular(18)),child:Text(text,style:TextStyle(color:context.colors.onPrimary,height:1.35))));}
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key, required this.data});
+  final _ChatData data;
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
 
-class _MessagesBottomNav extends StatelessWidget{
+class _ChatScreenState extends State<ChatScreen> {
+  final input = TextEditingController();
+  final List<String> sent = [];
+  @override
+  void dispose() {
+    input.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: context.colors.surface,
+        appBar: AppBar(
+          backgroundColor: context.colors.surfaceContainer,
+          foregroundColor: context.colors.onSurface,
+          titleSpacing: 0,
+          title: Row(
+            children: [
+              CircleAvatar(radius: 20, backgroundImage: NetworkImage(widget.data.image)),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.data.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
+                  Text(
+                    widget.data.online ? 'Şu an aktif' : 'Yakın zamanda aktif',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: widget.data.online
+                          ? (context.isDark ? context.tokens.lime : context.colors.primary)
+                          : context.colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz_rounded))],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(18),
+                children: [
+                  const _TheirBubble('Merhaba 👋 Profilindeki seyahat ilgisini gördüm.'),
+                  const _MyBubble('Selam! Evet, yeni yerler keşfetmeyi çok seviyorum.'),
+                  _TheirBubble(widget.data.message),
+                  ...sent.map((e) => _MyBubble(e)),
+                ],
+              ),
+            ),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.add_circle_outline_rounded, color: context.isDark ? context.tokens.lime : context.colors.primary),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: input,
+                        style: TextStyle(color: context.colors.onSurface),
+                        decoration: InputDecoration(
+                          hintText: 'Mesaj yaz...',
+                          filled: true,
+                          fillColor: context.colors.surfaceContainer,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton.filled(
+                      onPressed: () {
+                        final t = input.text.trim();
+                        if (t.isEmpty) return;
+                        setState(() {
+                          sent.add(t);
+                          input.clear();
+                        });
+                      },
+                      style: IconButton.styleFrom(backgroundColor: context.tokens.lime, foregroundColor: context.colors.onSecondary),
+                      icon: const Icon(Icons.send_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _TheirBubble extends StatelessWidget {
+  const _TheirBubble(this.text);
+  final String text;
+  @override
+  Widget build(BuildContext context) => Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10, right: 55),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          decoration: BoxDecoration(color: context.colors.surfaceContainer, borderRadius: BorderRadius.circular(18)),
+          child: Text(text, style: TextStyle(color: context.colors.onSurface, height: 1.35)),
+        ),
+      );
+}
+
+class _MyBubble extends StatelessWidget {
+  const _MyBubble(this.text);
+  final String text;
+  @override
+  Widget build(BuildContext context) => Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10, left: 55),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          decoration: BoxDecoration(color: context.colors.primary, borderRadius: BorderRadius.circular(18)),
+          child: Text(text, style: TextStyle(color: context.colors.onPrimary, height: 1.35)),
+        ),
+      );
+}
+
+class _MessagesBottomNav extends StatelessWidget {
   const _MessagesBottomNav();
-  @override Widget build(BuildContext context)=>SafeArea(top:false,child:Container(
-    padding:const EdgeInsets.fromLTRB(18,12,18,10),
-    decoration:BoxDecoration(color:context.colors.surfaceContainer,borderRadius:const BorderRadius.vertical(top:Radius.circular(30)),border:Border(top:BorderSide(color:context.colors.outlineVariant))),
-    child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
-      _Nav(icon:Icons.favorite_border_rounded,label:'Eşleşmeler',onTap:()=>Navigator.of(context).pop()),
-      _Nav(icon:Icons.quiz_outlined,label:'Sorular',onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const DailyQuestionsScreen()))),
-      const _Nav(icon:Icons.chat_bubble_rounded,label:'Mesajlar',active:true),
-      _Nav(icon:Icons.person_outline_rounded,label:'Profil',onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const ProfileScreen()))),
-    ]),
-  ));
+  @override
+  Widget build(BuildContext context) => SafeArea(
+        top: false,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 10),
+          decoration: BoxDecoration(
+            color: context.colors.surfaceContainer,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+            border: Border(top: BorderSide(color: context.colors.outlineVariant)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _Nav(icon: Icons.favorite_border_rounded, label: 'Eşleşmeler', onTap: () => Navigator.of(context).pop()),
+              _Nav(
+                icon: Icons.quiz_outlined,
+                label: 'Sorular',
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DailyQuestionsScreen())),
+              ),
+              const _Nav(icon: Icons.chat_bubble_rounded, label: 'Mesajlar', active: true),
+              _Nav(
+                icon: Icons.person_outline_rounded,
+                label: 'Profil',
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfileScreen())),
+              ),
+            ],
+          ),
+        ),
+      );
 }
-class _Nav extends StatelessWidget{const _Nav({required this.icon,required this.label,this.active=false,this.onTap});final IconData icon;final String label;final bool active;final VoidCallback? onTap;@override Widget build(BuildContext context){final activeColor=context.isDark?context.tokens.lime:context.colors.primary;return InkWell(onTap:onTap,borderRadius:BorderRadius.circular(18),child:Padding(padding:const EdgeInsets.symmetric(horizontal:8,vertical:4),child:Column(mainAxisSize:MainAxisSize.min,children:[Icon(icon,color:active?activeColor:context.colors.onSurfaceVariant,size:27),const SizedBox(height:5),Text(label,style:TextStyle(color:active?activeColor:context.colors.onSurfaceVariant,fontWeight:active?FontWeight.w800:FontWeight.w500,fontSize:12)),if(active)...[const SizedBox(height:6),Container(width:38,height:4,decoration:BoxDecoration(color:activeColor,borderRadius:BorderRadius.circular(99)))]])));}}
-class _OvalClipper extends CustomClipper<Path>{@override Path getClip(Size s){final p=Path()..lineTo(0,s.height-42);p.quadraticBezierTo(s.width*.5,s.height+20,s.width,s.height-42);p..lineTo(s.width,0)..close();return p;}@override bool shouldReclip(covariant CustomClipper<Path> oldClipper)=>false;}
-class _ChatData{const _ChatData(this.name,this.message,this.time,this.image,{this.online=false,this.verified=false,this.unread=0});final String name,message,time,image;final bool online,verified;final int unread;}
-const _chats=[_ChatData('Zeynep','Ben de kahve konusunda seçiciyim ☕','22:18','https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300',online:true,verified:true,unread:2),_ChatData('Duru','Hafta sonu için güzel bir sergi biliyorum.','21:04','https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300',online:true,verified:true,unread:1),_ChatData('Emre','Tamamdır, sonra konuşuruz 🙌','Dün','https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300'),_ChatData('Selin','Antalya’da en sevdiğin yer neresi?','Pzt','https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300',online:true),_ChatData('Mert','Görüşürüz, iyi geceler.','Paz','https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300')];
+
+class _Nav extends StatelessWidget {
+  const _Nav({required this.icon, required this.label, this.active = false, this.onTap});
+  final IconData icon;
+  final String label;
+  final bool active;
+  final VoidCallback? onTap;
+  @override
+  Widget build(BuildContext context) {
+    final activeColor = context.isDark ? context.tokens.lime : context.colors.primary;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: active ? activeColor : context.colors.onSurfaceVariant, size: 27),
+            const SizedBox(height: 5),
+            Text(
+              label,
+              style: TextStyle(
+                color: active ? activeColor : context.colors.onSurfaceVariant,
+                fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+            if (active) ...[
+              const SizedBox(height: 6),
+              Container(width: 38, height: 4, decoration: BoxDecoration(color: activeColor, borderRadius: BorderRadius.circular(99))),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OvalClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size s) {
+    final p = Path()..lineTo(0, s.height - 42);
+    p.quadraticBezierTo(s.width * .5, s.height + 20, s.width, s.height - 42);
+    p
+      ..lineTo(s.width, 0)
+      ..close();
+    return p;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _ChatData {
+  const _ChatData(this.name, this.message, this.time, this.image, {this.online = false, this.verified = false, this.unread = 0});
+  final String name, message, time, image;
+  final bool online, verified;
+  final int unread;
+}
+
+const _chats = [
+  _ChatData('Zeynep', 'Ben de kahve konusunda seçiciyim ☕', '22:18', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300', online: true, verified: true, unread: 2),
+  _ChatData('Duru', 'Hafta sonu için güzel bir sergi biliyorum.', '21:04', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300', online: true, verified: true, unread: 1),
+  _ChatData('Emre', 'Tamamdır, sonra konuşuruz 🙌', 'Dün', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300'),
+  _ChatData('Selin', 'Antalya’da en sevdiğin yer neresi?', 'Pzt', 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300', online: true),
+  _ChatData('Mert', 'Görüşürüz, iyi geceler.', 'Paz', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300'),
+];
