@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
 
@@ -35,7 +36,8 @@ class MatchProfileScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 390,
             pinned: true,
-            backgroundColor: const Color(0xFF5B18B8),
+            backgroundColor: bg,
+            surfaceTintColor: Colors.transparent,
             leading: Padding(
               padding: const EdgeInsets.all(8),
               child: _CircleButton(icon: Icons.arrow_back_rounded, onTap: () => Navigator.pop(context)),
@@ -43,67 +45,110 @@ class MatchProfileScreen extends StatelessWidget {
             actions: const [
               Padding(padding: EdgeInsets.only(right: 12), child: _CircleButton(icon: Icons.more_horiz_rounded)),
             ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const ColoredBox(
-                      color: Color(0xFF4B168F),
-                      child: Icon(Icons.person_rounded, size: 120, color: Colors.white54),
-                    ),
-                  ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Color(0x33000000), Color(0xFF090712)],
-                        stops: [0.42, .72, 1],
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final minHeight = kToolbarHeight + MediaQuery.paddingOf(context).top;
+                final collapse = (1 - ((constraints.maxHeight - minHeight) / (390 - minHeight))).clamp(0.0, 1.0);
+                final expandedOpacity = (1 - collapse * 1.8).clamp(0.0, 1.0);
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const ColoredBox(
+                        color: Color(0xFF4B168F),
+                        child: Icon(Icons.person_rounded, size: 120, color: Colors.white54),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    left: 24,
-                    right: 24,
-                    bottom: 24,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(child: Text('$name, $age', style: const TextStyle(color: Colors.white, fontSize: 34, height: 1, fontWeight: FontWeight.w900))),
-                            if (verified)
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Icon(Icons.verified_rounded, color: Color(0xFF9A4DFF), size: 25),
-                              ),
-                          ],
+                    if (collapse > 0)
+                      Opacity(
+                        opacity: collapse,
+                        child: ClipRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                            child: const ColoredBox(color: Color(0x66090712)),
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 14,
-                          runSpacing: 6,
-                          children: [
-                            Row(mainAxisSize: MainAxisSize.min, children: [
-                              Icon(Icons.circle, size: 9, color: online ? context.tokens.lime : Colors.white54),
-                              const SizedBox(width: 7),
-                              Text(status, style: TextStyle(color: online ? context.tokens.lime : Colors.white70, fontWeight: FontWeight.w600)),
-                            ]),
-                            Row(mainAxisSize: MainAxisSize.min, children: [
-                              const Icon(Icons.location_on_outlined, color: Colors.white70, size: 18),
-                              const SizedBox(width: 3),
-                              Text(city, style: const TextStyle(color: Colors.white70)),
-                            ]),
+                      ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color.lerp(Colors.transparent, const Color(0x66090712), collapse)!,
+                            const Color(0x33000000),
+                            Color.lerp(const Color(0xFF090712), const Color(0x99090712), collapse)!,
                           ],
+                          stops: const [0.2, .7, 1],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Positioned(
+                      left: 24,
+                      right: 24,
+                      bottom: 24,
+                      child: Opacity(
+                        opacity: expandedOpacity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(child: Text('$name, $age', style: const TextStyle(color: Colors.white, fontSize: 34, height: 1, fontWeight: FontWeight.w900))),
+                                if (verified)
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Icon(Icons.verified_rounded, color: Color(0xFF9A4DFF), size: 25),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 14,
+                              runSpacing: 6,
+                              children: [
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                                  Icon(Icons.circle, size: 9, color: online ? context.tokens.lime : Colors.white54),
+                                  const SizedBox(width: 7),
+                                  Text(status, style: TextStyle(color: online ? context.tokens.lime : Colors.white70, fontWeight: FontWeight.w600)),
+                                ]),
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                                  const Icon(Icons.location_on_outlined, color: Colors.white70, size: 18),
+                                  const SizedBox(width: 3),
+                                  Text(city, style: const TextStyle(color: Colors.white70)),
+                                ]),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: Opacity(
+                        opacity: collapse,
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top * .45),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('$name, $age', style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900, shadows: [Shadow(color: Colors.black54, blurRadius: 10)])),
+                                if (verified)
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 6),
+                                    child: Icon(Icons.verified_rounded, color: Color(0xFFB45CFF), size: 19),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           SliverToBoxAdapter(
