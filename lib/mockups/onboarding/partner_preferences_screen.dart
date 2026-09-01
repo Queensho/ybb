@@ -35,13 +35,12 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen>{
   }
 
   @override Widget build(BuildContext context){
-    const black=Color(0xFF090712);
-    return Scaffold(backgroundColor:black,body:SafeArea(child:Column(children:[
+    return Scaffold(backgroundColor:context.colors.surface,body:SafeArea(child:Column(children:[
       Padding(padding:EdgeInsets.fromLTRB(context.tokens.spaceLg,18,context.tokens.spaceLg,10),child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
         Row(children:[
           IconButton.filledTonal(onPressed:()=>Navigator.of(context).pop(),icon:const Icon(Icons.arrow_back_rounded)),
           const SizedBox(width:12),
-          Expanded(child:Text('Partner Tercihleri',style:context.texts.titleLarge?.copyWith(color:Colors.white,fontWeight:FontWeight.w900))),
+          Expanded(child:Text('Partner Tercihleri',style:context.texts.titleLarge?.copyWith(color:context.colors.onSurface,fontWeight:FontWeight.w900))),
         ]),
         const SizedBox(height:18),
         _ImportantPreferencesCard(selectedCount:selectedPreferenceCount,remainingRights:remainingRights),
@@ -96,22 +95,22 @@ class _PartnerPreferenceDetailScreenState extends State<PartnerPreferenceDetailS
   void _toggle(String option)=>setState((){doesntMatter=false;if(widget.question.multiSelect){if(!selected.add(option))selected.remove(option);}else{selected={option};}});
   void _toggleDoesntMatter()=>setState((){doesntMatter=!doesntMatter;if(doesntMatter)selected.clear();});
   @override Widget build(BuildContext context){
-    const black=Color(0xFF090712);final canSave=selected.isNotEmpty||doesntMatter;
-    return Scaffold(backgroundColor:black,body:SafeArea(child:Column(children:[
+    final canSave=selected.isNotEmpty||doesntMatter;
+    return Scaffold(backgroundColor:context.colors.surface,body:SafeArea(child:Column(children:[
       Expanded(child:SingleChildScrollView(physics:const AlwaysScrollableScrollPhysics(),padding:EdgeInsets.fromLTRB(context.tokens.spaceLg,18,context.tokens.spaceLg,120),child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
         Align(alignment:Alignment.centerLeft,child:IconButton.filledTonal(onPressed:()=>Navigator.of(context).pop(),icon:const Icon(Icons.arrow_back_rounded))),
         const SizedBox(height:18),
-        Text(widget.question.title,style:context.texts.headlineLarge?.copyWith(color:Colors.white,fontWeight:FontWeight.w900,height:1.08)),const SizedBox(height:10),
-        Text('Karşınızdaki kişide aradığınız cevabı seçin.',style:context.texts.bodyLarge?.copyWith(color:const Color(0xFFC9C3D5))),
-        if(widget.question.multiSelect)...[const SizedBox(height:8),Text('Sizin için uygun olan birden fazla cevabı seçebilirsiniz.',style:context.texts.bodyMedium?.copyWith(color:const Color(0xFF8F879A)))],
+        Text(widget.question.title,style:context.texts.headlineLarge?.copyWith(color:context.colors.onSurface,fontWeight:FontWeight.w900,height:1.08)),const SizedBox(height:10),
+        Text('Karşınızdaki kişide aradığınız cevabı seçin.',style:context.texts.bodyLarge?.copyWith(color:context.colors.onSurfaceVariant)),
+        if(widget.question.multiSelect)...[const SizedBox(height:8),Text('Sizin için uygun olan birden fazla cevabı seçebilirsiniz.',style:context.texts.bodyMedium?.copyWith(color:context.colors.onSurfaceVariant))],
         const SizedBox(height:22),
         for(final option in widget.question.options)...[_PreferenceOptionCard(label:option,selected:selected.contains(option),square:widget.question.multiSelect,onTap:()=>_toggle(option)),const SizedBox(height:12)],
-        const Divider(color:Color(0xFF31283D)),const SizedBox(height:10),
+        Divider(color:context.colors.outlineVariant),const SizedBox(height:10),
         _PreferenceOptionCard(label:'Fark etmez',selected:doesntMatter,square:false,onTap:_toggleDoesntMatter),
       ]))),
     ])),bottomNavigationBar:SafeArea(minimum:EdgeInsets.fromLTRB(context.tokens.spaceLg,10,context.tokens.spaceLg,16),child:SizedBox(height:58,child:FilledButton(
       onPressed:canSave?()=>Navigator.of(context).pop<Set<String>>(doesntMatter?{'Fark etmez'}:selected):null,
-      style:FilledButton.styleFrom(backgroundColor:context.tokens.lime,foregroundColor:black,disabledBackgroundColor:const Color(0xFF221B30),disabledForegroundColor:const Color(0xFF6E6878)),
+      style:FilledButton.styleFrom(backgroundColor:context.tokens.lime,foregroundColor:context.colors.onSecondary,disabledBackgroundColor:context.colors.surfaceContainerHighest,disabledForegroundColor:context.colors.onSurfaceVariant),
       child:const Text('Tercihi kaydet',style:TextStyle(fontWeight:FontWeight.w800,fontSize:16)),
     ))));
   }
@@ -121,13 +120,13 @@ class _PreferenceTile extends StatelessWidget{
   const _PreferenceTile({required this.question,required this.selectedValues,required this.locked,required this.onTap});final _PreferenceQuestion question;final Set<String> selectedValues;final bool locked;final VoidCallback? onTap;
   @override Widget build(BuildContext context){
     final has=selectedValues.isNotEmpty;final subtitle=locked?'2 tercih hakkınız doldu':(has?selectedValues.join(', '):'Henüz seçilmedi');
-    return Opacity(opacity:locked ? .45 : 1,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:Container(padding:const EdgeInsets.all(16),decoration:BoxDecoration(color:const Color(0xFF14101D),borderRadius:BorderRadius.circular(24),border:Border.all(color:const Color(0xFF31283D))),child:Row(children:[
-      Container(width:52,height:52,decoration:BoxDecoration(color:const Color(0xFF21172F),borderRadius:BorderRadius.circular(16)),child:Icon(locked?Icons.lock_rounded:question.icon,color:locked?const Color(0xFF9E95AA):context.tokens.lime)),const SizedBox(width:14),
-      Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(question.title,style:context.texts.titleMedium?.copyWith(color:Colors.white,fontWeight:FontWeight.w800)),const SizedBox(height:6),Text(subtitle,maxLines:2,overflow:TextOverflow.ellipsis,style:context.texts.bodyMedium?.copyWith(color:has?context.tokens.lime:const Color(0xFF9E95AA)))])),const Icon(Icons.chevron_right_rounded,color:Color(0xFFC9C3D5)),
+    return Opacity(opacity:locked ? .45 : 1,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:Container(padding:const EdgeInsets.all(16),decoration:BoxDecoration(color:context.colors.surfaceContainer,borderRadius:BorderRadius.circular(24),border:Border.all(color:context.colors.outlineVariant)),child:Row(children:[
+      Container(width:52,height:52,decoration:BoxDecoration(color:context.colors.surfaceContainerHighest,borderRadius:BorderRadius.circular(16)),child:Icon(locked?Icons.lock_rounded:question.icon,color:locked?context.colors.outline:context.tokens.lime)),const SizedBox(width:14),
+      Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(question.title,style:context.texts.titleMedium?.copyWith(color:context.colors.onSurface,fontWeight:FontWeight.w800)),const SizedBox(height:6),Text(subtitle,maxLines:2,overflow:TextOverflow.ellipsis,style:context.texts.bodyMedium?.copyWith(color:has?context.tokens.lime:context.colors.onSurfaceVariant))])),Icon(Icons.chevron_right_rounded,color:context.colors.onSurfaceVariant),
     ]))));
   }
 }
 class _PreferenceOptionCard extends StatelessWidget{
   const _PreferenceOptionCard({required this.label,required this.selected,required this.square,required this.onTap});final String label;final bool selected,square;final VoidCallback onTap;
-  @override Widget build(BuildContext context)=>InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:AnimatedContainer(duration:const Duration(milliseconds:180),padding:const EdgeInsets.symmetric(horizontal:18,vertical:18),decoration:BoxDecoration(color:selected?context.tokens.lime.withOpacity(.10):const Color(0xFF14101D),borderRadius:BorderRadius.circular(24),border:Border.all(color:selected?context.tokens.lime:const Color(0xFF31283D),width:selected?2:1)),child:Row(children:[Icon(square?(selected?Icons.check_box_rounded:Icons.check_box_outline_blank_rounded):(selected?Icons.radio_button_checked_rounded:Icons.radio_button_unchecked_rounded),color:selected?context.tokens.lime:const Color(0xFF9E95AA),size:30),const SizedBox(width:14),Expanded(child:Text(label,style:context.texts.titleLarge?.copyWith(color:Colors.white,fontWeight:FontWeight.w700)))])));
+  @override Widget build(BuildContext context)=>InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:AnimatedContainer(duration:const Duration(milliseconds:180),padding:const EdgeInsets.symmetric(horizontal:18,vertical:18),decoration:BoxDecoration(color:selected?context.tokens.lime.withOpacity(context.isDark?.10:.18):context.colors.surfaceContainer,borderRadius:BorderRadius.circular(24),border:Border.all(color:selected?context.tokens.lime:context.colors.outlineVariant,width:selected?2:1)),child:Row(children:[Icon(square?(selected?Icons.check_box_rounded:Icons.check_box_outline_blank_rounded):(selected?Icons.radio_button_checked_rounded:Icons.radio_button_unchecked_rounded),color:selected?context.tokens.lime:context.colors.outline,size:30),const SizedBox(width:14),Expanded(child:Text(label,style:context.texts.titleLarge?.copyWith(color:context.colors.onSurface,fontWeight:FontWeight.w700)))])));
 }
