@@ -20,5 +20,5 @@ class YbbHeroImage extends StatelessWidget {
     );
   }
 
-  static const String _data = 'UklGRqCJ...';
+  static const String _data = 'REPLACE_ME';
 }
