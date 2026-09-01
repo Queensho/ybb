@@ -38,9 +38,11 @@ class _PartnerPreferencesScreenState extends State<PartnerPreferencesScreen>{
     const black=Color(0xFF090712);
     return Scaffold(backgroundColor:black,body:SafeArea(child:Column(children:[
       Padding(padding:EdgeInsets.fromLTRB(context.tokens.spaceLg,18,context.tokens.spaceLg,10),child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
-        Align(alignment:Alignment.centerLeft,child:IconButton.filledTonal(onPressed:()=>Navigator.of(context).pop(),icon:const Icon(Icons.arrow_back_rounded))),
-        const SizedBox(height:12),
-        Text('Partner Tercihleri',style:context.texts.headlineMedium?.copyWith(color:Colors.white,fontWeight:FontWeight.w900)),
+        Row(children:[
+          IconButton.filledTonal(onPressed:()=>Navigator.of(context).pop(),icon:const Icon(Icons.arrow_back_rounded)),
+          const SizedBox(width:12),
+          Expanded(child:Text('Partner Tercihleri',style:context.texts.titleLarge?.copyWith(color:Colors.white,fontWeight:FontWeight.w900))),
+        ]),
         const SizedBox(height:18),
         _ImportantPreferencesCard(selectedCount:selectedPreferenceCount,remainingRights:remainingRights),
       ])),
