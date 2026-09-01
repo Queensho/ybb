@@ -19,7 +19,10 @@ class LoginScreen extends StatelessWidget {
               const Column(
                 children: [
                   _HeroBackground(),
-                  _LoginPanel(),
+                  ColoredBox(
+                    color: Color(0xFF4B1597),
+                    child: _LoginPanel(),
+                  ),
                 ],
               ),
               Positioned(
@@ -161,7 +164,7 @@ class _LoginPanel extends StatelessWidget {
         color: context.colors.surface,
         padding: EdgeInsets.fromLTRB(
           context.tokens.spaceLg,
-          118,
+          132,
           context.tokens.spaceLg,
           30,
         ),
@@ -319,10 +322,10 @@ class _OvalTopPanelClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path()
-      ..moveTo(0, 58)
-      ..quadraticBezierTo(0, 10, 64, 0)
-      ..lineTo(size.width - 64, 0)
-      ..quadraticBezierTo(size.width, 10, size.width, 58)
+      ..moveTo(0, 82)
+      ..cubicTo(0, 28, 42, 0, 96, 0)
+      ..lineTo(size.width - 96, 0)
+      ..cubicTo(size.width - 42, 0, size.width, 28, size.width, 82)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
