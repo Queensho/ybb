@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
 import '../onboarding/about_question_screen.dart';
 import '../onboarding/partner_preferences_screen.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,7 +27,12 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                _TopIcon(icon: Icons.settings_outlined, onTap: () {}),
+                _TopIcon(
+                  icon: Icons.settings_outlined,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 24),
