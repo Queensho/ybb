@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/context_ext.dart';
+import '../../core/theme/theme_controller.dart';
 import '../otp/otp_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -42,9 +43,10 @@ class _HeroArea extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
+            const Positioned(right: 16, top: 14, child: _ThemeSwitch()),
             Positioned(left: -58, top: 18, child: _Asset('assets/3d/07_lime_blob.svg', 138)),
             Positioned(right: -46, bottom: 8, child: _Asset('assets/3d/09_purple_blob.svg', 138)),
-            Positioned(right: 12, top: 28, child: Transform.rotate(angle: .10, child: _Asset('assets/3d/04_message_bubble.svg', 76))),
+            Positioned(right: 12, top: 76, child: Transform.rotate(angle: .10, child: _Asset('assets/3d/04_message_bubble.svg', 76))),
             Positioned(left: 18, bottom: 24, child: Transform.rotate(angle: -.10, child: _Asset('assets/3d/05_security_shield.svg', 72))),
             Positioned(right: 52, bottom: 64, child: _Asset('assets/3d/06_lime_sphere.svg', 44)),
             Center(
@@ -81,6 +83,102 @@ class _HeroArea extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ThemeSwitch extends StatelessWidget {
+  const _ThemeSwitch();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (context, _) {
+        final isDark = themeController.isDark;
+        return Semantics(
+          button: true,
+          label: isDark ? 'Aydınlık temaya geç' : 'Karanlık temaya geç',
+          child: GestureDetector(
+            onTap: () => themeController.setDark(!isDark),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 320),
+              curve: Curves.easeOutCubic,
+              width: 82,
+              height: 42,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xB20C0718) : const Color(0xEFFFFFFF),
+                borderRadius: BorderRadius.circular(99),
+                border: Border.all(
+                  color: isDark ? const Color(0xFF9B61FF) : const Color(0xFFE2D9F2),
+                ),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x26000000), blurRadius: 14, offset: Offset(0, 5)),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 220),
+                        opacity: isDark ? .55 : 1,
+                        child: Icon(
+                          Icons.light_mode_rounded,
+                          size: 18,
+                          color: isDark ? Colors.white70 : const Color(0xFF7C2CFF),
+                        ),
+                      ),
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 220),
+                        opacity: isDark ? 1 : .55,
+                        child: Icon(
+                          Icons.dark_mode_rounded,
+                          size: 18,
+                          color: isDark ? context.tokens.lime : const Color(0xFF756C80),
+                        ),
+                      ),
+                    ],
+                  ),
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 320),
+                    curve: Curves.easeOutBack,
+                    alignment: isDark ? Alignment.centerRight : Alignment.centerLeft,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 320),
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isDark ? const Color(0xFF7C2CFF) : context.tokens.lime,
+                        boxShadow: const [
+                          BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 3)),
+                        ],
+                      ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 220),
+                        transitionBuilder: (child, animation) => RotationTransition(
+                          turns: Tween<double>(begin: .65, end: 1).animate(animation),
+                          child: FadeTransition(opacity: animation, child: child),
+                        ),
+                        child: Icon(
+                          isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                          key: ValueKey(isDark),
+                          size: 19,
+                          color: isDark ? Colors.white : const Color(0xFF17111F),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
