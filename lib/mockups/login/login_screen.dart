@@ -16,22 +16,22 @@ class LoginScreen extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Column(
+              Column(
                 children: [
-                  _HeroBackground(),
-                  ColoredBox(
-                    color: Color(0xFF4B1597),
-                    child: _LoginPanel(),
+                  const _HeroBackground(),
+                  Transform.translate(
+                    offset: const Offset(0, -58),
+                    child: const _LoginPanel(),
                   ),
                 ],
               ),
               Positioned(
                 left: 10,
                 right: 10,
-                top: 66,
+                top: 30,
                 child: IgnorePointer(
                   child: SizedBox(
-                    height: 390,
+                    height: 370,
                     child: Image.asset(
                       'assets/images/ybb_hero.png',
                       fit: BoxFit.contain,
@@ -59,7 +59,7 @@ class _HeroBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 390,
+      height: 350,
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -164,7 +164,7 @@ class _LoginPanel extends StatelessWidget {
         color: context.colors.surface,
         padding: EdgeInsets.fromLTRB(
           context.tokens.spaceLg,
-          132,
+          108,
           context.tokens.spaceLg,
           30,
         ),
@@ -179,7 +179,7 @@ class _LoginPanel extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               'Telefon numaranızla devam edin',
               style: context.texts.titleLarge?.copyWith(
@@ -196,7 +196,7 @@ class _LoginPanel extends StatelessWidget {
                 color: context.colors.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
             SizedBox(
               height: 70,
               child: TextField(
@@ -244,7 +244,7 @@ class _LoginPanel extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
             SizedBox(
               width: double.infinity,
               height: 64,
@@ -266,7 +266,7 @@ class _LoginPanel extends StatelessWidget {
                 child: const Text('Doğrulama kodu gönder'),
               ),
             ),
-            const SizedBox(height: 26),
+            const SizedBox(height: 22),
             Row(
               children: [
                 Expanded(child: Divider(color: context.colors.outlineVariant)),
@@ -282,7 +282,7 @@ class _LoginPanel extends StatelessWidget {
                 Expanded(child: Divider(color: context.colors.outlineVariant)),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               height: 58,
