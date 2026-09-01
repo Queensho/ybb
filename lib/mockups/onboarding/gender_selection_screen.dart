@@ -21,9 +21,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const black = Color(0xFF090712);
     return Scaffold(
-      backgroundColor: black,
+      backgroundColor: context.colors.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -42,7 +41,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     Text(
                       'Seni nasıl tanımlayalım?',
                       style: context.texts.headlineLarge?.copyWith(
-                        color: Colors.white,
+                        color: context.colors.onSurface,
                         fontWeight: FontWeight.w900,
                         height: 1.04,
                       ),
@@ -51,7 +50,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     Text(
                       'Cinsiyet bilgin, sana daha uygun eşleşmeler ve daha doğru profil önerileri sunmamıza yardımcı olur.',
                       style: context.texts.bodyLarge?.copyWith(
-                        color: const Color(0xFFC9C3D5),
+                        color: context.colors.onSurfaceVariant,
                         height: 1.5,
                       ),
                     ),
@@ -68,13 +67,11 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF1A1527)
-                                  : const Color(0xFF120D20),
+                                  ? (context.isDark ? const Color(0xFF1A1527) : context.colors.primaryContainer.withOpacity(.35))
+                                  : context.colors.surfaceContainer,
                               borderRadius: BorderRadius.circular(22),
                               border: Border.all(
-                                color: isSelected
-                                    ? context.tokens.lime
-                                    : const Color(0xFF31263F),
+                                color: isSelected ? context.tokens.lime : context.colors.outlineVariant,
                                 width: isSelected ? 2 : 1,
                               ),
                             ),
@@ -84,16 +81,12 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? context.tokens.lime
-                                        : const Color(0xFF21172F),
+                                    color: isSelected ? context.tokens.lime : context.colors.surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Icon(
                                     option.$2,
-                                    color: isSelected
-                                        ? const Color(0xFF100B1E)
-                                        : const Color(0xFFB7AECB),
+                                    color: isSelected ? context.colors.onSecondary : context.colors.onSurfaceVariant,
                                   ),
                                 ),
                                 SizedBox(width: context.tokens.spaceMd),
@@ -101,18 +94,14 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                                   child: Text(
                                     option.$1,
                                     style: context.texts.titleMedium?.copyWith(
-                                      color: Colors.white,
+                                      color: context.colors.onSurface,
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
                                 ),
                                 Icon(
-                                  isSelected
-                                      ? Icons.check_circle_rounded
-                                      : Icons.radio_button_unchecked_rounded,
-                                  color: isSelected
-                                      ? context.tokens.lime
-                                      : const Color(0xFF6F657D),
+                                  isSelected ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+                                  color: isSelected ? context.tokens.lime : context.colors.outline,
                                 ),
                               ],
                             ),
@@ -121,8 +110,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       );
                     }),
                     SizedBox(height: context.tokens.spaceMd),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         _StepBar(active: true),
                         _StepBar(),
                         _StepBar(),
@@ -135,16 +124,14 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                           ? null
                           : () {
                               Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const AboutQuestionScreen(),
-                                ),
+                                MaterialPageRoute<void>(builder: (_) => const AboutQuestionScreen()),
                               );
                             },
                       style: FilledButton.styleFrom(
                         backgroundColor: context.tokens.lime,
-                        foregroundColor: black,
-                        disabledBackgroundColor: const Color(0xFF21172F),
-                        disabledForegroundColor: const Color(0xFF6F657D),
+                        foregroundColor: context.colors.onSecondary,
+                        disabledBackgroundColor: context.colors.surfaceContainerHighest,
+                        disabledForegroundColor: context.colors.onSurfaceVariant,
                         padding: const EdgeInsets.symmetric(vertical: 18),
                       ),
                       child: const Row(
@@ -208,10 +195,7 @@ class _CurvedGenderHero extends StatelessWidget {
                   ),
                   child: const Text(
                     'ADIM 1 / 4',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                   ),
                 ),
               ),
@@ -220,22 +204,14 @@ class _CurvedGenderHero extends StatelessWidget {
                   width: 126,
                   height: 126,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF130C21),
+                    color: context.isDark ? const Color(0xFF130C21) : Colors.white,
                     borderRadius: BorderRadius.circular(36),
                     border: Border.all(color: Colors.white12),
                     boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x66000000),
-                        blurRadius: 28,
-                        offset: Offset(10, 16),
-                      ),
+                      BoxShadow(color: Color(0x66000000), blurRadius: 28, offset: Offset(10, 16)),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.person_rounded,
-                    size: 66,
-                    color: Color(0xFFB7FF2A),
-                  ),
+                  child: const Icon(Icons.person_rounded, size: 66, color: Color(0xFFB7FF2A)),
                 ),
               ),
             ],
@@ -251,12 +227,7 @@ class _OvalBottomClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height - 68);
-    path.quadraticBezierTo(
-      size.width * .5,
-      size.height + 24,
-      size.width,
-      size.height - 68,
-    );
+    path.quadraticBezierTo(size.width * .5, size.height + 24, size.width, size.height - 68);
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -277,7 +248,7 @@ class _StepBar extends StatelessWidget {
         height: 5,
         margin: const EdgeInsets.only(right: 7),
         decoration: BoxDecoration(
-          color: active ? context.tokens.lime : const Color(0xFF2B2237),
+          color: active ? context.tokens.lime : context.colors.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(999),
         ),
       ),
