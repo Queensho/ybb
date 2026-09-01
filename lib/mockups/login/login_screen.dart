@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/context_ext.dart';
 import '../../core/theme/theme_controller.dart';
 import '../otp/otp_screen.dart';
+import 'ybb_hero_image.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -13,10 +14,7 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            children: const [
-              _HeroArea(),
-              _LoginPanel(),
-            ],
+            children: const [_HeroArea(), _LoginPanel()],
           ),
         ),
       ),
@@ -41,18 +39,14 @@ class _HeroArea extends StatelessWidget {
           ),
         ),
         child: Stack(
-          children: [
+          children: const [
             Center(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 42, 18, 4),
-                child: SvgPicture.asset(
-                  'assets/3d/ybb_login_hero.svg',
-                  width: 620,
-                  fit: BoxFit.contain,
-                ),
+                padding: EdgeInsets.fromLTRB(18, 42, 18, 4),
+                child: YbbHeroImage(),
               ),
             ),
-            const Positioned(right: 16, top: 14, child: _ThemeSwitch()),
+            Positioned(right: 16, top: 14, child: _ThemeSwitch()),
           ],
         ),
       ),
