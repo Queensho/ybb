@@ -1,42 +1,24 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class YbbHeroImage extends StatefulWidget {
+class YbbHeroImage extends StatelessWidget {
   const YbbHeroImage({super.key});
 
-  @override
-  State<YbbHeroImage> createState() => _YbbHeroImageState();
-}
-
-class _YbbHeroImageState extends State<YbbHeroImage> {
-  late final Future<Uint8List> _bytes = _loadImage();
-
-  Future<Uint8List> _loadImage() async {
-    final svg = await rootBundle.loadString('assets/3d/ybb_login_hero.svg');
-    final match = RegExp(r'base64,([^\"]+)').firstMatch(svg);
-    if (match == null) {
-      throw StateError('YBB hero image data not found');
-    }
-    return base64Decode(match.group(1)!);
-  }
+  static final Uint8List _bytes = base64Decode(_data);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List>(
-      future: _bytes,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
-        return Image.memory(
-          snapshot.data!,
-          width: 620,
-          fit: BoxFit.contain,
-          gaplessPlayback: true,
-          filterQuality: FilterQuality.high,
-        );
-      },
+    return Image.memory(
+      _bytes,
+      width: 620,
+      height: 270,
+      fit: BoxFit.contain,
+      gaplessPlayback: true,
+      filterQuality: FilterQuality.high,
+      errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported_outlined, color: Colors.white54, size: 64),
     );
   }
+
+  static const String _data = 'UklGRqCJ...';
 }
