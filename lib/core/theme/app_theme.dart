@@ -9,11 +9,16 @@ class AppTheme {
 
   static ThemeData get light => _build(
         ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.light).copyWith(
+          primary: const Color(0xFF7438F5),
+          onPrimary: Colors.white,
           secondary: lime,
-          onSecondary: const Color(0xFF111111),
-          surface: const Color(0xFFF9F7FF),
-          surfaceContainer: const Color(0xFFF1ECFA),
-          surfaceContainerHighest: const Color(0xFFE7DDF7),
+          onSecondary: const Color(0xFF17131F),
+          surface: const Color(0xFFFDFCFF),
+          onSurface: const Color(0xFF17131F),
+          surfaceContainer: const Color(0xFFFFFFFF),
+          surfaceContainerHighest: const Color(0xFFF4F0FA),
+          outline: const Color(0xFFD9D2E3),
+          outlineVariant: const Color(0xFFE9E3F0),
         ),
         AppTokens.light,
       );
@@ -36,6 +41,11 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
       extensions: <ThemeExtension<dynamic>>[tokens],
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(58),
