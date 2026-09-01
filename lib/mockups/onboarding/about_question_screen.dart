@@ -46,14 +46,13 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const black = Color(0xFF090712);
     final question = questions[currentIndex];
     final step = currentIndex + 1;
     final progress = step / questions.length;
     final percent = (progress * 100).round();
 
     return Scaffold(
-      backgroundColor: black,
+      backgroundColor: context.colors.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -79,7 +78,7 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
                       Text(
                         'SORU $step / ${questions.length}',
                         style: context.texts.labelLarge?.copyWith(
-                          color: context.tokens.lime,
+                          color: context.isDark ? context.tokens.lime : context.colors.primary,
                           fontWeight: FontWeight.w900,
                           letterSpacing: .5,
                         ),
@@ -88,7 +87,7 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
                       Text(
                         '%$percent',
                         style: context.texts.titleMedium?.copyWith(
-                          color: Colors.white,
+                          color: context.colors.onSurface,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -100,7 +99,7 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 7,
-                      backgroundColor: const Color(0xFF241B31),
+                      backgroundColor: context.colors.surfaceContainerHighest,
                       valueColor: AlwaysStoppedAnimation<Color>(context.tokens.lime),
                     ),
                   ),
@@ -125,7 +124,7 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
                       Text(
                         question.title,
                         style: context.texts.headlineLarge?.copyWith(
-                          color: Colors.white,
+                          color: context.colors.onSurface,
                           fontWeight: FontWeight.w900,
                           height: 1.08,
                         ),
@@ -135,9 +134,7 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
                         _AnswerCard(
                           label: option,
                           selected: selectedAnswer == option,
-                          onTap: () => setState(
-                            () => answers[currentIndex] = option,
-                          ),
+                          onTap: () => setState(() => answers[currentIndex] = option),
                         ),
                         const SizedBox(height: 14),
                       ],
@@ -162,12 +159,10 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
             onPressed: selectedAnswer == null ? null : _continue,
             style: FilledButton.styleFrom(
               backgroundColor: context.tokens.lime,
-              foregroundColor: black,
-              disabledBackgroundColor: const Color(0xFF221B30),
-              disabledForegroundColor: const Color(0xFF6E6878),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
+              foregroundColor: context.colors.onSecondary,
+              disabledBackgroundColor: context.colors.surfaceContainerHighest,
+              disabledForegroundColor: context.colors.onSurfaceVariant,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
             ),
             child: Text(
               isLastQuestion ? 'Tamamla' : 'Kaydet ve devam et',
@@ -182,18 +177,12 @@ class _AboutQuestionScreenState extends State<AboutQuestionScreen> {
 
 class _QuestionData {
   const _QuestionData({required this.title, required this.options});
-
   final String title;
   final List<String> options;
 }
 
 class _AnswerCard extends StatelessWidget {
-  const _AnswerCard({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
+  const _AnswerCard({required this.label, required this.selected, required this.onTap});
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -207,23 +196,19 @@ class _AnswerCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
           decoration: BoxDecoration(
             color: selected
-                ? context.tokens.lime.withOpacity(.10)
-                : const Color(0xFF14101D),
+                ? context.tokens.lime.withOpacity(context.isDark ? .10 : .18)
+                : context.colors.surfaceContainer,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: selected ? context.tokens.lime : const Color(0xFF31283D),
+              color: selected ? context.tokens.lime : context.colors.outlineVariant,
               width: selected ? 2 : 1,
             ),
           ),
           child: Row(
             children: [
               Icon(
-                selected
-                    ? Icons.check_circle_rounded
-                    : Icons.radio_button_unchecked_rounded,
-                color: selected
-                    ? context.tokens.lime
-                    : const Color(0xFF8E8798),
+                selected ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+                color: selected ? context.tokens.lime : context.colors.outline,
                 size: 30,
               ),
               const SizedBox(width: 14),
@@ -231,7 +216,7 @@ class _AnswerCard extends StatelessWidget {
                 child: Text(
                   label,
                   style: context.texts.titleLarge?.copyWith(
-                    color: Colors.white,
+                    color: context.colors.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
