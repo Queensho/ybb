@@ -164,7 +164,7 @@ class _LoginPanel extends StatelessWidget {
         color: context.colors.surface,
         padding: EdgeInsets.fromLTRB(
           context.tokens.spaceLg,
-          108,
+          76,
           context.tokens.spaceLg,
           30,
         ),
