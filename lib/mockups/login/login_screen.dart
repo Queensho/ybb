@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme/context_ext.dart';
 import '../../core/theme/theme_controller.dart';
 import '../otp/otp_screen.dart';
-import 'ybb_hero_image.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -39,14 +38,20 @@ class _HeroArea extends StatelessWidget {
           ),
         ),
         child: Stack(
-          children: const [
+          children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(18, 42, 18, 4),
-                child: YbbHeroImage(),
+                padding: const EdgeInsets.fromLTRB(18, 42, 18, 4),
+                child: Image.asset(
+                  'assets/images/ybb_hero.png',
+                  width: 620,
+                  height: 270,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                ),
               ),
             ),
-            Positioned(right: 16, top: 14, child: _ThemeSwitch()),
+            const Positioned(right: 16, top: 14, child: _ThemeSwitch()),
           ],
         ),
       ),
