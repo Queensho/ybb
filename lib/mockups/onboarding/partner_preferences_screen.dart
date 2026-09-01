@@ -144,8 +144,76 @@ class _PreferenceDetailHero extends StatelessWidget{
 class _HeroIcon extends StatelessWidget{const _HeroIcon({required this.icon});final IconData icon;@override Widget build(BuildContext context)=>Container(width:104,height:104,decoration:BoxDecoration(color:const Color(0xFF2A1255).withOpacity(.84),shape:BoxShape.circle,border:Border.all(color:Colors.white12)),child:Icon(icon,size:54,color:context.tokens.lime));}
 
 class _PreferenceTile extends StatelessWidget{
-  const _PreferenceTile({required this.question,required this.selectedValues,required this.locked,required this.onTap});final _PreferenceQuestion question;final Set<String> selectedValues;final bool locked;final VoidCallback? onTap;
-  @override Widget build(BuildContext context){final has=selectedValues.isNotEmpty;final subtitle=locked?'2 tercih hakkınız doldu':(has?selectedValues.join(', '):'Henüz seçilmedi');return Opacity(opacity:locked ? .45 : 1,child:InkWell(onTap:onTap,borderRadius:BorderRadius.circular(24),child:Container(padding:const EdgeInsets.all(16),decoration:BoxDecoration(color:const Color(0xFF14101D),borderRadius:BorderRadius.circular(24),border:Border.all(color:const Color(0xFF31283D))),child:Row(children:[Container(width:52,height:52,decoration:BoxDecoration(color:const Color(0xFF21172F),borderRadius:BorderRadius.circular(16)),child:Icon(locked?Icons.lock_rounded:question.icon,color:locked?const Color(0xFF9E95AA):context.tokens.lime)),const SizedBox(width:14),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(question.title,style:context.texts.titleMedium?.copyWith(color:Colors.white,fontWeight:FontWeight.w800)),const SizedBox(height:6),Text(subtitle,maxLines:2,overflow:TextOverflow.ellipsis,style:context.texts.bodyMedium?.copyWith(color:has?context.tokens.lime:const Color(0xFF9E95AA)))])),const Icon(Icons.chevron_right_rounded,color:Color(0xFFC9C3D5))])))));}
+  const _PreferenceTile({required this.question,required this.selectedValues,required this.locked,required this.onTap});
+  final _PreferenceQuestion question;
+  final Set<String> selectedValues;
+  final bool locked;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final has = selectedValues.isNotEmpty;
+    final subtitle = locked
+        ? '2 tercih hakkınız doldu'
+        : (has ? selectedValues.join(', ') : 'Henüz seçilmedi');
+
+    return Opacity(
+      opacity: locked ? .45 : 1,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF14101D),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFF31283D)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF21172F),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  locked ? Icons.lock_rounded : question.icon,
+                  color: locked ? const Color(0xFF9E95AA) : context.tokens.lime,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      question.title,
+                      style: context.texts.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.texts.bodyMedium?.copyWith(
+                        color: has ? context.tokens.lime : const Color(0xFF9E95AA),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: Color(0xFFC9C3D5)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PreferenceOptionCard extends StatelessWidget{
