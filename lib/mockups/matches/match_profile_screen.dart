@@ -37,11 +37,51 @@ class MatchProfileScreen extends StatelessWidget {
           _CompatibilityCard(score:score),const SizedBox(height:18),const _SectionTitle('Ortak noktalar'),const SizedBox(height:10),Wrap(spacing:8,runSpacing:8,children:interests.map((e)=>_Chip(label:e)).toList()),const SizedBox(height:22),const _SectionTitle('Uyum özeti'),const SizedBox(height:10),const _InfoCard(children:[_InfoRow(icon:Icons.question_answer_outlined,title:'Ortak cevaplar',value:'4 ortak cevap'),_InfoRow(icon:Icons.tune_rounded,title:'Partner tercihleri',value:'2 tercih uyumlu'),_InfoRow(icon:Icons.translate_rounded,title:'Konuştuğu dil',value:'Türkçe')]),const SizedBox(height:22),const _SectionTitle('Hakkında'),const SizedBox(height:10),const _InfoCard(children:[_AboutText()]),
         ]))),
       ]),
-      bottomNavigationBar:SafeArea(top:false,child:Container(color:bg,padding:const EdgeInsets.fromLTRB(20,10,20,14),child:Row(children:[
-        Container(width:58,height:58,decoration:BoxDecoration(shape:BoxShape.circle,border:Border.all(color:context.colors.outlineVariant)),child:Icon(Icons.favorite_border_rounded,color:context.isDark?context.tokens.lime:context.colors.primary)),
-        const SizedBox(width:12),
-        Expanded(child:SizedBox(height:58,child:FilledButton.icon(onPressed:(){},icon:const Icon(Icons.chat_bubble_rounded),label:const Text('Mesaj gönder'),style:FilledButton.styleFrom(backgroundColor:context.tokens.lime,foregroundColor:context.colors.onSecondary,textStyle:const TextStyle(fontSize:16,fontWeight:FontWeight.w900),shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(20))))),
-      ]))),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          color: bg,
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+          child: Row(
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: context.colors.outlineVariant),
+                ),
+                child: Icon(
+                  Icons.favorite_border_rounded,
+                  color: context.isDark ? context.tokens.lime : context.colors.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 58,
+                  child: FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.chat_bubble_rounded),
+                    label: const Text('Mesaj gönder'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: context.tokens.lime,
+                      foregroundColor: context.colors.onSecondary,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
