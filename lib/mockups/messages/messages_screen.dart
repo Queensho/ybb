@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/context_ext.dart';
 import '../questions/daily_questions_screen.dart';
+import '../profile/profile_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -53,7 +54,7 @@ class _MessagesBottomNav extends StatelessWidget{
       _Nav(icon:Icons.favorite_border_rounded,label:'Eşleşmeler',onTap:()=>Navigator.of(context).pop()),
       _Nav(icon:Icons.quiz_outlined,label:'Sorular',onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const DailyQuestionsScreen()))),
       const _Nav(icon:Icons.chat_bubble_rounded,label:'Mesajlar',active:true),
-      const _Nav(icon:Icons.person_outline_rounded,label:'Profil'),
+      _Nav(icon:Icons.person_outline_rounded,label:'Profil',onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const ProfileScreen()))),
     ]),
   ));
 }
